@@ -1,0 +1,32 @@
+#  overthinkos/arch — the Arch Linux image family, split out of the main
+#  overthink repo (2026-05). Mounted as a git submodule at image/arch.
+#
+#  This repo VENDORS NOTHING. It composes the canonical ov layers, the shared
+#  build-config (distro/builder/init), and the arch base + builder
+#  entirely by GITHUB REFERENCE into github.com/overthinkos/overthink — every
+#  layer in image.yml/deploy.yml is an `@github.com/...` ref, and build.yml +
+#  arch-base.yml are remote includes. There is no duplicated config.
+#
+#  Directly buildable: `ov image build arch-coder` (the build verb defaults to
+#  this overthink.yml). From the parent repo: `ov -C image/arch image build
+#  arch-coder`, or anywhere: `ov --repo overthinkos/arch image build arch-coder`.
+version: 2026.141.1600
+defaults:
+    platform:
+        - linux/amd64
+    tag: auto
+    registry: ghcr.io/overthinkos
+    build:
+        - pac
+    merge:
+        auto: false
+        max_mb: 128
+include:
+    # Local per-kind entries (Arch images, VMs, deploy beds).
+    - image.yml
+    - vm.yml
+    - deploy.yml
+    # Shared build-config + base/builder pair — pulled from the main repo by
+    # github reference (single source of truth, pinned to one tag).
+    - '@github.com/overthinkos/overthink/build.yml:v2026.141.1600'
+    - '@github.com/overthinkos/overthink/arch-base.yml:v2026.141.1600'
