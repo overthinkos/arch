@@ -1,7 +1,8 @@
 layer:
-  name: arch-pac-test
-  distro:
-    arch:
-      package:
-        - neovim
-        - ripgrep
+    version: 2026.144.1443
+    name: arch-pac-test
+    distro:
+        arch:
+            package:
+                - neovim
+                - ripgrep

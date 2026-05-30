@@ -10,7 +10,7 @@ of the main repo.
 |---|---|
 | `image:` | `arch-coder`, `arch-ov`, `arch-test`, `arch-pacstrap-builder`, `arch-pacstrap` |
 | `vm:` | `arch-pacstrap` (bootstrap), `arch` (cloud-image) |
-| `deploy:` | `arch-pacstrap-vm`, `arch-vm` (+ nested `arch-host`, `ov-cachyos-tailscale-test`) |
+| `deploy:` | `eval-arch-pacstrap-vm`, `eval-arch-vm` (+ nested `arch-host`, `ov-cachyos-tailscale-test`) |
 
 ## Composition by reference — nothing is vendored
 
