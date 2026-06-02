@@ -1,7 +1,7 @@
 # image/arch — signpost (not the rule-set)
 
-This submodule is the **Arch Linux** base image family: a single
-`overthink.yml` that imports the main repo under the `ov` namespace and
+This submodule is the **Arch Linux** base image family: an `overthink.yml`
+(plus per-kind sibling files) that imports the main repo under the `ov` namespace and
 `build.yml` flat.
 
 **Load these skills FIRST (R0):**
