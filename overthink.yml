@@ -20,7 +20,7 @@
 #  Directly buildable: `ov image build arch-coder` (the build verb defaults to
 #  this overthink.yml). From the parent repo: `ov -C image/arch image build
 #  arch-coder`, or anywhere: `ov --repo overthinkos/arch image build arch-coder`.
-version: 2026.156.1041
+version: 2026.156.1531
 defaults:
     platform:
         - linux/amd64
