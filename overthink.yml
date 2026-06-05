@@ -20,7 +20,7 @@
 #  Directly buildable: `ov image build arch-coder` (the build verb defaults to
 #  this overthink.yml). From the parent repo: `ov -C image/arch image build
 #  arch-coder`, or anywhere: `ov --repo overthinkos/arch image build arch-coder`.
-version: 2026.155.1801
+version: 2026.156.557
 defaults:
     platform:
         - linux/amd64
@@ -37,7 +37,7 @@ import:
     # Main repo entities under the `ov` namespace — ov.arch (every arch image's
     # base) + ov.arch-builder (the multi-stage pixi/npm/cargo/aur builder).
     - ov: '@github.com/overthinkos/overthink:v2026.143.844'
-    - image.yml
+    - box.yml
     - vm.yml
     - pod.yml
     - k8s.yml
@@ -46,8 +46,8 @@ discover:
     # (arch-pac-test, arch-aur-test) relocated out of main's shared layers/.
     # Bare layer names below resolve here; every other layer still arrives by
     # @github ref into main.
-    layer:
-        - path: layers
+    candy:
+        - path: candy
           recursive: true
 eval:
     # Disposable R10 test beds for the arch VMs (kind:eval — the 2026-05
@@ -69,10 +69,10 @@ eval:
         # Minimal in-guest tooling so arch-host (child) has something
         # to depend on, and so the command: probes have ripgrep/uv/
         # pre-commit versions to verify.
-        add_layer:
-            - '@github.com/overthinkos/overthink/layers/ripgrep:v2026.141.1600'
-            - '@github.com/overthinkos/overthink/layers/uv:v2026.141.1600'
-            - '@github.com/overthinkos/overthink/layers/pre-commit:v2026.141.1600'
+        add_candy:
+            - '@github.com/overthinkos/overthink/candy/ripgrep:v2026.141.1600'
+            - '@github.com/overthinkos/overthink/candy/uv:v2026.141.1600'
+            - '@github.com/overthinkos/overthink/candy/pre-commit:v2026.141.1600'
         install_opts:
             with_service: true
             allow_repo_changes: true # pacman-key + mirror tweaks
@@ -186,9 +186,9 @@ eval:
                 target: local
                 disposable: true
                 lifecycle: dev
-                add_layer:
-                    - '@github.com/overthinkos/overthink/layers/tailscale:v2026.141.1600'
-                    - '@github.com/overthinkos/overthink/layers/tailscale-up:v2026.141.1600'
+                add_candy:
+                    - '@github.com/overthinkos/overthink/candy/tailscale:v2026.141.1600'
+                    - '@github.com/overthinkos/overthink/candy/tailscale-up:v2026.141.1600'
                 install_opts:
                     with_service: true
                     allow_root_tasks: true
@@ -206,8 +206,8 @@ eval:
                 target: local
                 disposable: true
                 lifecycle: dev
-                add_layer:
-                    - '@github.com/overthinkos/overthink/layers/direnv:v2026.141.1600'
+                add_candy:
+                    - '@github.com/overthinkos/overthink/candy/direnv:v2026.141.1600'
                 eval:
                     # Nested command runs: SSH into eval-arch-vm → exec as arch user.
                     # `ov deploy show` lists entries in schema v4 (there is
