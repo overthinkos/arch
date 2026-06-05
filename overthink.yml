@@ -20,7 +20,7 @@
 #  Directly buildable: `ov image build arch-coder` (the build verb defaults to
 #  this overthink.yml). From the parent repo: `ov -C image/arch image build
 #  arch-coder`, or anywhere: `ov --repo overthinkos/arch image build arch-coder`.
-version: 2026.156.557
+version: 2026.156.1041
 defaults:
     platform:
         - linux/amd64
@@ -46,9 +46,9 @@ discover:
     # (arch-pac-test, arch-aur-test) relocated out of main's shared layers/.
     # Bare layer names below resolve here; every other layer still arrives by
     # @github ref into main.
-    candy:
-        - path: candy
-          recursive: true
+    - path: candy
+      recursive: true
+      manifest: candy.yml
 eval:
     # Disposable R10 test beds for the arch VMs (kind:eval — the 2026-05
     # deploy→eval unification moved repo-shipped disposable beds out of
