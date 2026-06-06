@@ -17,7 +17,7 @@
 #      boundary, so each image that builds a multi-stage format declares its own
 #      `builder:` map qualified to `ov.arch-builder`.
 #
-#  Directly buildable: `ov image build arch-coder` (the build verb defaults to
+#  Directly buildable: `ov box build arch-coder` (the build verb defaults to
 #  this overthink.yml). From the parent repo: `ov -C image/arch image build
 #  arch-coder`, or anywhere: `ov --repo overthinkos/arch image build arch-coder`.
 version: 2026.156.1531
@@ -43,7 +43,7 @@ import:
     - k8s.yml
 discover:
     # Layers vendored locally by THIS repo — the arch-exclusive test fixtures
-    # (arch-pac-test, arch-aur-test) relocated out of main's shared layers/.
+    # (arch-pac-test, arch-aur-test) relocated out of main's shared candy/.
     # Bare layer names below resolve here; every other layer still arrives by
     # @github ref into main.
     - path: candy
@@ -172,8 +172,8 @@ eval:
             # -----------------------------------------------------------------
             # R10 bed for tailscale + tailscale-up runtime wiring.
             # ---------------------------------------------------------------
-            # Exercises layers/tailscale (daemon install + systemctl enable)
-            # AND layers/tailscale-up (--operator + --hostname runtime task)
+            # Exercises candy/tailscale (daemon install + systemctl enable)
+            # AND candy/tailscale-up (--operator + --hostname runtime task)
             # via the nested HostDeployTarget in eval-arch-vm. The arch user
             # has uid 1000 + passwordless wheel sudo per the cloud-init
             # config, matching the canonical ov-cachyos host shape.
