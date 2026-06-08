@@ -11,15 +11,15 @@
 #  import: has two shapes —
 #    * flat string  → build.yml (shared distro/builder/init vocabulary), merged
 #      into this repo's root namespace.
-#    * `ov: <ref>`  → the main opencharly repo mounted under the `charly` namespace,
+#    * `charly: <ref>`  → the main opencharly repo mounted under the `charly` namespace,
 #      so `charly.arch` (every arch image's base) + `charly.arch-builder` (the pixi/npm/
 #      cargo/aur builder) resolve. Builder maps do NOT cross a namespace
 #      boundary, so each image that builds a multi-stage format declares its own
 #      `builder:` map qualified to `charly.arch-builder`.
 #
 #  Directly buildable: `charly box build arch-coder` (the build verb defaults to
-#  this opencharly.yml). From the parent repo: `ov -C image/arch image build
-#  arch-coder`, or anywhere: `ov --repo overthinkos/arch image build arch-coder`.
+#  this charly.yml). From the parent repo: `charly -C image/arch image build
+#  arch-coder`, or anywhere: `charly --repo overthinkos/arch image build arch-coder`.
 version: 2026.159.3
 defaults:
     platform:
@@ -33,10 +33,10 @@ defaults:
         max_mb: 128
 import:
     # Shared build-config vocabulary (distro/builder/init) — flat root import.
-    - '@github.com/overthinkos/overthink/build.yml:v2026.159.0928'
+    - '@github.com/overthinkos/overthink/build.yml:v2026.159.1458'
     # Main repo entities under the `charly` namespace — charly.arch (every arch image's
     # base) + charly.arch-builder (the multi-stage pixi/npm/cargo/aur builder).
-    - charly: '@github.com/overthinkos/overthink:v2026.159.0928'
+    - charly: '@github.com/overthinkos/overthink:v2026.159.1458'
     - box.yml
     - vm.yml
     - pod.yml
@@ -70,9 +70,9 @@ eval:
         # to depend on, and so the command: probes have ripgrep/uv/
         # pre-commit versions to verify.
         add_candy:
-            - '@github.com/overthinkos/overthink/candy/ripgrep:v2026.159.0928'
-            - '@github.com/overthinkos/overthink/candy/uv:v2026.159.0928'
-            - '@github.com/overthinkos/overthink/candy/pre-commit:v2026.159.0928'
+            - '@github.com/overthinkos/overthink/candy/ripgrep:v2026.159.1458'
+            - '@github.com/overthinkos/overthink/candy/uv:v2026.159.1458'
+            - '@github.com/overthinkos/overthink/candy/pre-commit:v2026.159.1458'
         install_opts:
             with_service: true
             allow_repo_changes: true # pacman-key + mirror tweaks
@@ -134,7 +134,7 @@ eval:
             - {id: disk-ballpark, scope: deploy, command: "df -BG / | awk 'NR==2 {gsub(\"G\",\"\",$2); print int($2)}'", stdout: {matches: "^([1-9][0-9]|[1-9][0-9][0-9])"}}
             # --- C.9  Layer-applied tooling (ripgrep / uv / pre-commit) ----
             # NB: no `command -v charly` / `charly version` here. This VM uses
-            # ov_install.strategy: auto, whose contract (ov/ov_install.go) is to
+            # ov_install.strategy: auto, whose contract (charly/ov_install.go) is to
             # stage the host charly at /tmp/charly-<calver> for DEPLOY OPS ONLY —
             # deliberately NOT on the guest PATH, so it can never shadow a
             # package-managed charly. Asserting `command -v charly` therefore
@@ -195,8 +195,8 @@ eval:
                 disposable: true
                 lifecycle: dev
                 add_candy:
-                    - '@github.com/overthinkos/overthink/candy/tailscale:v2026.159.0928'
-                    - '@github.com/overthinkos/overthink/candy/tailscale-up:v2026.159.0928'
+                    - '@github.com/overthinkos/overthink/candy/tailscale:v2026.159.1458'
+                    - '@github.com/overthinkos/overthink/candy/tailscale-up:v2026.159.1458'
                 install_opts:
                     with_service: true
                     allow_root_tasks: true
@@ -215,7 +215,7 @@ eval:
                 disposable: true
                 lifecycle: dev
                 add_candy:
-                    - '@github.com/overthinkos/overthink/candy/direnv:v2026.159.0928'
+                    - '@github.com/overthinkos/overthink/candy/direnv:v2026.159.1458'
                 eval:
                     # Nested command runs: SSH into eval-arch-vm → exec as arch user.
                     # Verify the nested host-deploy was RECORDED in the guest ledger

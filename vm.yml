@@ -1,5 +1,5 @@
-#  Per-kind file for vm entries. Sibling of opencharly.yml — included via
-#  opencharly.yml's `includes:` list. The schema kind discriminator is
+#  Per-kind file for vm entries. Sibling of charly.yml — imported via
+#  charly.yml's `import:` list. The schema kind discriminator is
 #  `kind: vm` for kind-keyed entries; root-shape map is `vm:` (this file).
 #  2026-05 kind-files cutover.
 version: 2026.159.3
@@ -42,7 +42,7 @@ vm:
                 - systemctl enable --now qemu-guest-agent
                 # Diagnostic: write network + sshd state to /boot so it can
                 # be mount-inspected after a failed-boot cycle.
-                - "{ ip a; echo ===listen===; ss -tlnp; echo ===sshd===; systemctl status sshd --no-pager; } > /boot/ov-diag.txt 2>&1"
+                - "{ ip a; echo ===listen===; ss -tlnp; echo ===sshd===; systemctl status sshd --no-pager; } > /boot/charly-diag.txt 2>&1"
     arch:
         source:
             kind: cloud_image

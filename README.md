@@ -20,7 +20,7 @@ pulled from `github.com/overthinkos/overthink` by **github reference**:
 - every layer in `box.yml` / `deploy.yml` is an `@github.com/overthinkos/overthink/candy/<name>:<tag>` ref;
 - the shared build-config (`build.yml` — distro/builder/init) and the
   `arch` base + `arch-builder` pair (`arch-base.yml`) are remote
-  `include:`s in `opencharly.yml`.
+  `include:`s in `charly.yml`.
 
 All references pin to a single tag of the upstream repo, so a build is
 reproducible. There is exactly one definition of every layer and of the
@@ -29,14 +29,14 @@ base/builder pair — no duplication.
 ## Build
 
 ```bash
-# Inside the submodule (the build verb defaults to opencharly.yml):
+# Inside the submodule (the build verb defaults to charly.yml):
 charly box build arch-coder
 
 # From the parent opencharly repo:
-ov -C image/arch image build arch-coder
+charly -C image/arch image build arch-coder
 
 # Standalone, against the published repo:
-ov --repo overthinkos/arch image build arch-coder
+charly --repo overthinkos/arch image build arch-coder
 ```
 
 The first build resolves the upstream github references into
@@ -46,8 +46,8 @@ The first build resolves the upstream github references into
 ## Requirements
 
 A build of any image here fetches from the upstream repo, so it needs network
-access and an `charly` recent enough to understand the config's schema version
-(`charly` hard-fails with an "update ov" message if the config is newer than the
+access and a `charly` recent enough to understand the config's schema version
+(`charly` hard-fails with an "update charly" message if the config is newer than the
 binary supports).
 
 ---

@@ -1,6 +1,6 @@
 # image/arch — signpost (not the rule-set)
 
-This submodule is the **Arch Linux** base image family: an `opencharly.yml`
+This submodule is the **Arch Linux** base image family: a `charly.yml`
 (plus per-kind sibling files) that imports the main repo under the `charly` namespace and
 `build.yml` flat.
 
@@ -8,7 +8,7 @@ This submodule is the **Arch Linux** base image family: an `opencharly.yml`
 
 - `/charly-distros:arch` — the Arch base image; root of the pac-based hierarchy.
 - `/charly-distros:arch-builder` — the pixi/npm/cargo/yay builder.
-- `/charly-coder:arch-coder`, `/charly-coder:arch-charly` — the dev/ov images here.
+- `/charly-coder:arch-coder`, `/charly-coder:arch-charly` — the dev/charly images here.
 - `/charly-image:image` + `/charly-image:layer` — composition + layer authoring.
 
 **Authoritative rules live in the `opencharly` superproject's root `CLAUDE.md`**
