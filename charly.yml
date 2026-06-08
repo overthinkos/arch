@@ -1,8 +1,8 @@
 #  overthinkos/arch — the Arch Linux image family, split out of the main
-#  overthink repo (2026-05). Mounted as a git submodule at image/arch.
+#  opencharly repo (2026-05). Mounted as a git submodule at image/arch.
 #
 #  SINGLE-FILE config (2026-05 import-namespace cutover): every local entity
-#  (the arch-coder/arch-ov/arch-test images, the arch-pacstrap-builder +
+#  (the arch-coder/arch-charly/arch-test images, the arch-pacstrap-builder +
 #  arch-pacstrap bootstrap pair, the arch + arch-pacstrap VMs, and the
 #  disposable eval beds) is inlined here. This repo VENDORS NOTHING — every
 #  layer is an `@github.com/...` ref, and the shared build.yml vocabulary +
@@ -11,16 +11,16 @@
 #  import: has two shapes —
 #    * flat string  → build.yml (shared distro/builder/init vocabulary), merged
 #      into this repo's root namespace.
-#    * `ov: <ref>`  → the main overthink repo mounted under the `ov` namespace,
-#      so `ov.arch` (every arch image's base) + `ov.arch-builder` (the pixi/npm/
+#    * `ov: <ref>`  → the main opencharly repo mounted under the `charly` namespace,
+#      so `charly.arch` (every arch image's base) + `charly.arch-builder` (the pixi/npm/
 #      cargo/aur builder) resolve. Builder maps do NOT cross a namespace
 #      boundary, so each image that builds a multi-stage format declares its own
-#      `builder:` map qualified to `ov.arch-builder`.
+#      `builder:` map qualified to `charly.arch-builder`.
 #
-#  Directly buildable: `ov box build arch-coder` (the build verb defaults to
-#  this overthink.yml). From the parent repo: `ov -C image/arch image build
+#  Directly buildable: `charly box build arch-coder` (the build verb defaults to
+#  this opencharly.yml). From the parent repo: `ov -C image/arch image build
 #  arch-coder`, or anywhere: `ov --repo overthinkos/arch image build arch-coder`.
-version: 2026.156.1531
+version: 2026.159.3
 defaults:
     platform:
         - linux/amd64
@@ -33,10 +33,10 @@ defaults:
         max_mb: 128
 import:
     # Shared build-config vocabulary (distro/builder/init) — flat root import.
-    - '@github.com/overthinkos/overthink/build.yml:v2026.141.1600'
-    # Main repo entities under the `ov` namespace — ov.arch (every arch image's
-    # base) + ov.arch-builder (the multi-stage pixi/npm/cargo/aur builder).
-    - ov: '@github.com/overthinkos/overthink:v2026.143.844'
+    - '@github.com/overthinkos/overthink/build.yml:v2026.159.0928'
+    # Main repo entities under the `charly` namespace — charly.arch (every arch image's
+    # base) + charly.arch-builder (the multi-stage pixi/npm/cargo/aur builder).
+    - charly: '@github.com/overthinkos/overthink:v2026.159.0928'
     - box.yml
     - vm.yml
     - pod.yml
@@ -53,7 +53,7 @@ eval:
     # Disposable R10 test beds for the arch VMs (kind:eval — the 2026-05
     # deploy→eval unification moved repo-shipped disposable beds out of
     # deploy.yml). disposable: true is the sole authorization for the
-    # unattended destroy+rebuild driven by `ov eval run <bed>`. These are
+    # unattended destroy+rebuild driven by `charly eval run <bed>`. These are
     # zero-side-effect beds (target: vm); there are NO operator deploy entries
     # in this repo, so there is no deploy: section.
     eval-arch-pacstrap-vm:
@@ -70,22 +70,25 @@ eval:
         # to depend on, and so the command: probes have ripgrep/uv/
         # pre-commit versions to verify.
         add_candy:
-            - '@github.com/overthinkos/overthink/candy/ripgrep:v2026.141.1600'
-            - '@github.com/overthinkos/overthink/candy/uv:v2026.141.1600'
-            - '@github.com/overthinkos/overthink/candy/pre-commit:v2026.141.1600'
+            - '@github.com/overthinkos/overthink/candy/ripgrep:v2026.159.0928'
+            - '@github.com/overthinkos/overthink/candy/uv:v2026.159.0928'
+            - '@github.com/overthinkos/overthink/candy/pre-commit:v2026.159.0928'
         install_opts:
             with_service: true
             allow_repo_changes: true # pacman-key + mirror tweaks
             skip_incompatible: true # skip rpm:/deb:-only layer sections
             verify: true
-            # The arch VM is a cloud image (no ov builder context); name the
-            # arch-builder image so the npm-building add_layer (pre-commit)
+            # The arch VM is a cloud image (no charly builder context); name the
+            # arch-builder image so the npm-building add_candy (pre-commit)
             # resolves a builder. DeploymentNode has no `builder:` map field —
             # install_opts.builder_image is the supported path (mirrors cachyos).
-            # Pin the current arch-builder tag (the main repo's published builder).
-            builder_image: ghcr.io/overthinkos/arch-builder:2026.150.1424
-        env:
-            - OVERTHINK_DEV=true
+            # Use the NAMESPACE short-ref (charly.arch-builder), NOT a pinned ghcr
+            # tag: a full ghcr ref is checked as-is and breaks when that tag is
+            # pruned / ghcr publishing is paused (manifest unknown). The short-ref
+            # routes through cfg.ResolveImage → newest local arch-builder, and
+            # builds it on-demand from the `charly` namespace if absent (same path
+            # arch-coder's builder: map uses).
+            builder_image: charly.arch-builder
         eval:
             # --- C.1  Guest identity + SSH connectivity ---------------
             - {id: guest-identity-uid, scope: deploy, command: id, stdout: {contains: "uid=1000(arch)"}}
@@ -129,10 +132,15 @@ eval:
             - {id: cpu-count-4, scope: deploy, command: nproc, stdout: {matches: "^4"}}
             - {id: mem-8g-ballpark, scope: deploy, command: "awk '/MemTotal/ {print int($2/1024/1024)}' /proc/meminfo", stdout: {matches: "^[78]"}}
             - {id: disk-ballpark, scope: deploy, command: "df -BG / | awk 'NR==2 {gsub(\"G\",\"\",$2); print int($2)}'", stdout: {matches: "^([1-9][0-9]|[1-9][0-9][0-9])"}}
-            # --- C.9  Layer-applied tooling + ov itself --------------
-            - {id: ov-binary-present, scope: deploy, command: "command -v ov"}
-            - {id: ov-version, scope: deploy, command: "ov version", stdout: {matches: "[0-9]{4}\\.[0-9]+"}}
-            - {id: ov-help-works, scope: deploy, command: "ov --help 2>&1 | head -1", stdout: {contains: ov}}
+            # --- C.9  Layer-applied tooling (ripgrep / uv / pre-commit) ----
+            # NB: no `command -v charly` / `charly version` here. This VM uses
+            # ov_install.strategy: auto, whose contract (ov/ov_install.go) is to
+            # stage the host charly at /tmp/charly-<calver> for DEPLOY OPS ONLY —
+            # deliberately NOT on the guest PATH, so it can never shadow a
+            # package-managed charly. Asserting `command -v charly` therefore
+            # contradicts the strategy. charly-installed-as-a-package-on-PATH in a
+            # VM (the localpkg-on-VM path) is proven by the main repo's
+            # eval-charly-vm bed (add_candy: charly + localpkg-pac-autoresolve).
             - {id: ripgrep-version, scope: deploy, command: "rg --version", stdout: {contains: ripgrep}}
             - {id: uv-version, scope: deploy, command: "uv --version", stdout: {contains: "uv "}}
             - {id: pre-commit-version, scope: deploy, command: "pre-commit --version", stdout: {contains: pre-commit}}
@@ -176,19 +184,19 @@ eval:
             # AND candy/tailscale-up (--operator + --hostname runtime task)
             # via the nested HostDeployTarget in eval-arch-vm. The arch user
             # has uid 1000 + passwordless wheel sudo per the cloud-init
-            # config, matching the canonical ov-cachyos host shape.
+            # config, matching the canonical charly-cachyos host shape.
             # The test bed's tailscaled is logged out (no auth performed),
             # which is the layer's expected pass-by-skip state for the
             # operator-readable / hostname-tracks-system probes — the
             # explicit baseline probes below cover the daemon-up shape.
             # -----------------------------------------------------------------
-            ov-cachyos-tailscale-test:
+            charly-cachyos-tailscale-test:
                 target: local
                 disposable: true
                 lifecycle: dev
                 add_candy:
-                    - '@github.com/overthinkos/overthink/candy/tailscale:v2026.141.1600'
-                    - '@github.com/overthinkos/overthink/candy/tailscale-up:v2026.141.1600'
+                    - '@github.com/overthinkos/overthink/candy/tailscale:v2026.159.0928'
+                    - '@github.com/overthinkos/overthink/candy/tailscale-up:v2026.159.0928'
                 install_opts:
                     with_service: true
                     allow_root_tasks: true
@@ -207,17 +215,22 @@ eval:
                 disposable: true
                 lifecycle: dev
                 add_candy:
-                    - '@github.com/overthinkos/overthink/candy/direnv:v2026.141.1600'
+                    - '@github.com/overthinkos/overthink/candy/direnv:v2026.159.0928'
                 eval:
                     # Nested command runs: SSH into eval-arch-vm → exec as arch user.
-                    # `ov deploy show` lists entries in schema v4 (there is
-                    # no `ov deploy list` subcommand).
-                    - {id: ah-ov-deploy-show, scope: deploy, command: "ov deploy show"}
+                    # Verify the nested host-deploy was RECORDED in the guest ledger
+                    # (a deploys/*.json record exists). NB: we do NOT probe via
+                    # `charly deploy show` here — the VM's ov_install.strategy: auto
+                    # stages charly at /tmp/charly-<calver> (NOT on $PATH, by design,
+                    # so it never shadows a package charly), so a bare `charly` in the
+                    # guest is `command not found`. The ledger record is the
+                    # venue-agnostic proof that the deploy landed.
+                    - {id: ah-deploy-recorded, scope: deploy, command: "test -n \"$(ls -A ~/.config/opencharly/installed/deploys/ 2>/dev/null)\""}
                     - {id: ah-direnv-version, scope: deploy, command: "direnv --version"}
-                    # Ledger entries land in guest ~/.config/overthink/installed/
+                    # Ledger entries land in guest ~/.config/opencharly/installed/
                     # (NOT operator-side).
-                    - {id: ah-ledger-deploys-dir, scope: deploy, command: "test -d /home/arch/.config/overthink/installed/deploys"}
-                    - {id: ah-ledger-layers-dir, scope: deploy, command: "test -d /home/arch/.config/overthink/installed/layers"}
+                    - {id: ah-ledger-deploys-dir, scope: deploy, command: "test -d /home/arch/.config/opencharly/installed/deploys"}
+                    - {id: ah-ledger-layers-dir, scope: deploy, command: "test -d /home/arch/.config/opencharly/installed/layers"}
                     # Ledger directories exist (created on first nested
                     # host-deploy). Per-layer/per-deploy ledger files are
                     # written on the OPERATOR side for nested host-

@@ -1,8 +1,8 @@
-#  Per-kind file for vm entries. Sibling of overthink.yml — included via
-#  overthink.yml's `includes:` list. The schema kind discriminator is
+#  Per-kind file for vm entries. Sibling of opencharly.yml — included via
+#  opencharly.yml's `includes:` list. The schema kind discriminator is
 #  `kind: vm` for kind-keyed entries; root-shape map is `vm:` (this file).
 #  2026-05 kind-files cutover.
-version: 2026.156.1531
+version: 2026.159.3
 vm:
     arch-pacstrap:
         source:
@@ -53,10 +53,10 @@ vm:
         # Disposability is NOT a VmSpec field (the schema-v3 cutover removed
         # VmSpec.Disposable / VmSpec.Lifecycle). The load-bearing copy lives on
         # the eval.eval-arch-vm bed below (`disposable: true` authorizes the
-        # unattended destroy+rebuild). See /ov-internals:disposable.
+        # unattended destroy+rebuild). See /charly-internals:disposable.
         #
         # `backend: libvirt` is REQUIRED — the eval-arch-vm bed's eval list
-        # contains 8 `ov eval libvirt …` probes + 2 `ov eval spice …`
+        # contains 8 `charly eval libvirt …` probes + 2 `charly eval spice …`
         # probes that all hit the libvirt user-session daemon socket.
         # With `backend: auto` and the daemon NOT running on the
         # operator's machine, resolveVmBackend silently falls through
@@ -64,7 +64,7 @@ vm:
         # "no such file or directory". Explicit `backend: libvirt`
         # makes resolveVmBackend fail loudly with a `systemctl --user
         # enable --now virtqemud.service` hint instead. See
-        # /ov-vm:vm "Backend matrix" for the prereq.
+        # /charly-vm:vm "Backend matrix" for the prereq.
         backend: libvirt
         disk_size: 40G
         ram: 8G
@@ -79,7 +79,7 @@ vm:
         cloud_init:
             timezone: UTC
             package:
-                # The host's ov binary (PKGBUILD `depends=()`) is built
+                # The host's charly binary (PKGBUILD `depends=()`) is built
                 # with cgo for SPICE audio: `gordonklaus/portaudio`
                 # links against libportaudio.so.2; the SPICE protocol
                 # path also pulls `libopusfile.so.0` and `libopus.so.0`
@@ -87,7 +87,7 @@ vm:
                 # host binary is scp'd into the guest, so the guest
                 # MUST ship those .so files — `portaudio` and
                 # `opusfile` (which pulls `opus`) cover all three.
-                # Without any of them, `ov version` exits 127 with
+                # Without any of them, `charly version` exits 127 with
                 # "error while loading shared libraries".
                 #
                 # `base-devel` and `git` are required by the bed's
@@ -103,7 +103,7 @@ vm:
                 - git
             runcmd:
                 # Activate the desktop / agent units that came in with
-                # cloud_init.packages. The legacy ov-from-source build
+                # cloud_init.packages. The legacy charly-from-source build
                 # block (git clone + makepkg + pacman -U) was DELETED
                 # in the 2026-05 R10 follow-up: it was redundant with
                 # `ov_install.strategy: auto` (which scps the host
@@ -114,7 +114,7 @@ vm:
                 #
                 # `pacman-key --init && --populate archlinux` is
                 # required for post-boot pacman invocations driven
-                # by `ov deploy add eval-arch-vm <ref>` (layer install via
+                # by `charly deploy add eval-arch-vm <ref>` (layer install via
                 # SSH). Without it, `pacman -Sy <pkg>` fails with
                 # `keyring is not writable / required key missing`.
                 # Cloud-init's own `packages:` step is unaffected
@@ -125,7 +125,7 @@ vm:
                 - systemctl enable --now spice-vdagentd
                 - systemctl enable --now qemu-guest-agent
             ov_install:
-                # `auto` scps the host's ov binary into the guest
+                # `auto` scps the host's charly binary into the guest
                 # after cloud-init reaches steady-state. Sole install
                 # path; no defence-in-depth runcmd fallback (it could
                 # not consume the scp's failure signal anyway because
