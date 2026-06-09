@@ -1,0 +1,76 @@
+box:
+    name: arch-coder
+    # base: charly.arch — the `arch` base from main's base.yml, via the `charly`
+    # import namespace. distro:/build: are VALUES → inherited across the
+    # namespace boundary; builder: is a map of namespace-relative REFS →
+    # NOT inherited, so it is declared explicitly below.
+    base: charly.arch
+    # Explicit builder map: arch-coder compiles pixi (pixi/uv), npm (nodejs),
+    # and cargo (rust) multi-stage layers. Builder maps do NOT cross the
+    # `charly` import-namespace boundary, so each format routes to charly.arch-builder.
+    builder:
+        aur: charly.arch-builder
+        cargo: charly.arch-builder
+        npm: charly.arch-builder
+        pixi: charly.arch-builder
+    candy:
+        - '@github.com/overthinkos/overthink/candy/agent-forwarding:v2026.160.0856'
+        - '@github.com/overthinkos/overthink/candy/sshd:v2026.160.0856'
+        - '@github.com/overthinkos/overthink/candy/charly:v2026.160.0856'
+        - '@github.com/overthinkos/overthink/candy/charly-mcp:v2026.160.0856'
+        - '@github.com/overthinkos/overthink/candy/container-nesting:v2026.160.0856'
+        - '@github.com/overthinkos/overthink/candy/dbus:v2026.160.0856'
+        - '@github.com/overthinkos/overthink/candy/tmux:v2026.160.0856'
+        - '@github.com/overthinkos/overthink/candy/language-runtimes:v2026.160.0856'
+        - '@github.com/overthinkos/overthink/candy/golang:v2026.160.0856'
+        - '@github.com/overthinkos/overthink/candy/nodejs:v2026.160.0856'
+        - '@github.com/overthinkos/overthink/candy/rust:v2026.160.0856'
+        - '@github.com/overthinkos/overthink/candy/pixi:v2026.160.0856'
+        - '@github.com/overthinkos/overthink/candy/uv:v2026.160.0856'
+        - '@github.com/overthinkos/overthink/candy/build-toolchain:v2026.160.0856'
+        - '@github.com/overthinkos/overthink/candy/dev-tools:v2026.160.0856'
+        - '@github.com/overthinkos/overthink/candy/pre-commit:v2026.160.0856'
+        - '@github.com/overthinkos/overthink/candy/direnv:v2026.160.0856'
+        - '@github.com/overthinkos/overthink/candy/gh:v2026.160.0856'
+        - '@github.com/overthinkos/overthink/candy/typst:v2026.160.0856'
+        - '@github.com/overthinkos/overthink/candy/asciinema:v2026.160.0856'
+        - '@github.com/overthinkos/overthink/candy/claude-code:v2026.160.0856'
+        - '@github.com/overthinkos/overthink/candy/codex:v2026.160.0856'
+        - '@github.com/overthinkos/overthink/candy/gemini:v2026.160.0856'
+        - '@github.com/overthinkos/overthink/candy/forgecode:v2026.160.0856'
+        - '@github.com/overthinkos/overthink/candy/oracle:v2026.160.0856'
+        - '@github.com/overthinkos/overthink/candy/devops-tools:v2026.160.0856'
+        - '@github.com/overthinkos/overthink/candy/kubernetes:v2026.160.0856'
+        - '@github.com/overthinkos/overthink/candy/docker-ce:v2026.160.0856'
+        - '@github.com/overthinkos/overthink/candy/github-actions:v2026.160.0856'
+        - '@github.com/overthinkos/overthink/candy/google-cloud:v2026.160.0856'
+        - '@github.com/overthinkos/overthink/candy/google-cloud-npm:v2026.160.0856'
+        - '@github.com/overthinkos/overthink/candy/grafana-tools:v2026.160.0856'
+    port:
+        - 2222:2222
+        - 18765:18765
+    eval:
+        - command: test -x ${HOME}/.npm-global/bin/claude && test -x ${HOME}/.npm-global/bin/codex && test -x ${HOME}/.npm-global/bin/gemini && test -x ${HOME}/.npm-global/bin/forge
+          id: arch-coder-ai-clis
+          exit_status: 0
+        - command: test -x /usr/bin/go && test -x /usr/bin/node && { test -x ${HOME}/.cargo/bin/cargo || test -x /usr/bin/cargo; }
+          id: arch-coder-languages
+          exit_status: 0
+        - command: test -x /usr/bin/kubectl && test -x /usr/bin/docker && test -x /usr/local/bin/aws && test -x /usr/bin/gcloud && test -x /usr/local/bin/tofu
+          id: arch-coder-devops
+          exit_status: 0
+        - addr: 127.0.0.1:${HOST_PORT:2222}
+          id: arch-coder-sshd-port
+          timeout: 5s
+          scope: deploy
+          reachable: true
+        - command: charly version
+          id: arch-coder-charly-version
+          scope: deploy
+          in_container: true
+          exit_status: 0
+        - addr: 127.0.0.1:${HOST_PORT:18765}
+          id: arch-coder-mcp-port
+          timeout: 5s
+          scope: deploy
+          reachable: true
