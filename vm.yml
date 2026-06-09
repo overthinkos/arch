@@ -2,7 +2,7 @@
 #  charly.yml's `import:` list. The schema kind discriminator is
 #  `kind: vm` for kind-keyed entries; root-shape map is `vm:` (this file).
 #  2026-05 kind-files cutover.
-version: 2026.159.3
+version: 2026.159.1912
 vm:
     arch-pacstrap:
         source:
@@ -83,7 +83,7 @@ vm:
                 # with cgo for SPICE audio: `gordonklaus/portaudio`
                 # links against libportaudio.so.2; the SPICE protocol
                 # path also pulls `libopusfile.so.0` and `libopus.so.0`
-                # transitively. Under `ov_install.strategy: auto` the
+                # transitively. Under `charly_install.strategy: auto` the
                 # host binary is scp'd into the guest, so the guest
                 # MUST ship those .so files — `portaudio` and
                 # `opusfile` (which pulls `opus`) cover all three.
@@ -106,7 +106,7 @@ vm:
                 # cloud_init.packages. The legacy charly-from-source build
                 # block (git clone + makepkg + pacman -U) was DELETED
                 # in the 2026-05 R10 follow-up: it was redundant with
-                # `ov_install.strategy: auto` (which scps the host
+                # `charly_install.strategy: auto` (which scps the host
                 # binary post-boot via VmDeployTarget) AND timed out
                 # under load — leaving non-empty errors[] in
                 # /var/lib/cloud/data/result.json that broke the
@@ -124,7 +124,7 @@ vm:
                 - pacman-key --populate archlinux
                 - systemctl enable --now spice-vdagentd
                 - systemctl enable --now qemu-guest-agent
-            ov_install:
+            charly_install:
                 # `auto` scps the host's charly binary into the guest
                 # after cloud-init reaches steady-state. Sole install
                 # path; no defence-in-depth runcmd fallback (it could

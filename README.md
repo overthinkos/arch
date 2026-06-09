@@ -8,7 +8,7 @@ of the main repo.
 
 | Kind | Entries |
 |---|---|
-| `image:` | `arch-coder`, `arch-charly`, `arch-test`, `arch-pacstrap-builder`, `arch-pacstrap` |
+| `image:` | `arch-coder`, `charly-arch`, `arch-test`, `arch-pacstrap-builder`, `arch-pacstrap` |
 | `vm:` | `arch-pacstrap` (bootstrap), `arch` (cloud-image) |
 | `deploy:` | `eval-arch-pacstrap-vm`, `eval-arch-vm` (+ nested `arch-host`, `charly-cachyos-tailscale-test`) |
 

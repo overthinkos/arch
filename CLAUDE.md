@@ -8,7 +8,7 @@ This submodule is the **Arch Linux** base image family: a `charly.yml`
 
 - `/charly-distros:arch` — the Arch base image; root of the pac-based hierarchy.
 - `/charly-distros:arch-builder` — the pixi/npm/cargo/yay builder.
-- `/charly-coder:arch-coder`, `/charly-coder:arch-charly` — the dev/charly images here.
+- `/charly-coder:arch-coder`, `/charly-coder:charly-arch` — the dev/charly images here.
 - `/charly-image:image` + `/charly-image:layer` — composition + layer authoring.
 
 **Authoritative rules live in the `opencharly` superproject's root `CLAUDE.md`**
