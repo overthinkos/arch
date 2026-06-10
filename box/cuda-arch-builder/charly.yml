@@ -8,7 +8,7 @@ box:
     name: cuda-arch-builder
     base: arch-builder
     # @github-qualified (like arch-builder's own layers) so this builder
-    # resolves when pulled CROSS-REPO — e.g. image/cachyos's selkies-*-nvidia
+    # resolves when pulled CROSS-REPO — e.g. box/cachyos's selkies-*-nvidia
     # images set builder.pixi: arch.cuda-arch-builder, which builds this image as
     # an intermediate in the consumer's graph; a bare `cuda` would be an
     # "unknown layer" there (it's an arch-submodule layer, not the consumer's).

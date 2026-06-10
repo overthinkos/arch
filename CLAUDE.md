@@ -1,4 +1,4 @@
-# image/arch — signpost (not the rule-set)
+# box/arch — signpost (not the rule-set)
 
 This submodule is the **Arch Linux** base image family: a self-contained
 `charly.yml` that OWNS the arch base/builder stack locally (`arch`,

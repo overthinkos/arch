@@ -1,7 +1,7 @@
 # overthinkos/arch
 
 The **Arch Linux image family** for [OpenCharly](https://github.com/overthinkos/overthink),
-split into its own repository and mounted as a git submodule at `image/arch`
+split into its own repository and mounted as a git submodule at `box/arch`
 of the main repo.
 
 ## What's here
@@ -32,10 +32,10 @@ reproducible. There is exactly one definition of every layer — no duplication.
 charly box build arch-coder
 
 # From the parent opencharly repo:
-charly -C image/arch image build arch-coder
+charly -C box/arch box build arch-coder
 
 # Standalone, against the published repo:
-charly --repo overthinkos/arch image build arch-coder
+charly --repo overthinkos/arch box build arch-coder
 ```
 
 The first build resolves the upstream github references into

@@ -1,5 +1,5 @@
 #  overthinkos/arch — the Arch Linux image family, split out of the main
-#  opencharly repo (2026-05). Mounted as a git submodule at image/arch.
+#  opencharly repo (2026-05). Mounted as a git submodule at box/arch.
 #
 #  SINGLE-FILE config: every entity (the arch + arch-builder + cuda-arch-builder
 #  base/builder stack, the arch-coder/charly-arch/arch-test/vscode-test images,
@@ -12,8 +12,8 @@
 #  local `arch`, every multi-stage builder a bare local `arch-builder`.
 #
 #  Directly buildable: `charly box build arch-coder` (the build verb defaults to
-#  this charly.yml). From the parent repo: `charly -C image/arch image build
-#  arch-coder`, or anywhere: `charly --repo overthinkos/arch image build arch-coder`.
+#  this charly.yml). From the parent repo: `charly -C box/arch box build
+#  arch-coder`, or anywhere: `charly --repo overthinkos/arch box build arch-coder`.
 version: 2026.160.1301
 # Canonical repo identity. Optional now that the main↔arch cycle dissolved (main
 # imports this repo; this repo imports nothing back), but kept for self-import
