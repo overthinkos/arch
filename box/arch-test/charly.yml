@@ -1,14 +1,13 @@
 box:
     name: arch-test
-    base: charly.arch
+    base: arch
     build:
         - pac
         - aur
-    # Explicit builder map: arch-test builds an AUR layer (arch-aur-test).
-    # Builder maps do NOT cross the `charly` import-namespace boundary, so the
-    # aur format routes to charly.arch-builder explicitly.
+    # Explicit builder map: arch-test builds an AUR layer (arch-aur-test); the
+    # aur format routes to the local arch-builder.
     builder:
-        aur: charly.arch-builder
+        aur: arch-builder
     candy:
         - '@github.com/overthinkos/overthink/candy/agent-forwarding:v2026.160.2017'
         - arch-pac-test

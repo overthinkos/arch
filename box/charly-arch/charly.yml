@@ -1,6 +1,6 @@
 box:
     name: charly-arch
-    base: charly.arch
+    base: arch
     candy:
         - '@github.com/overthinkos/overthink/candy/agent-forwarding:v2026.160.2017'
         - '@github.com/overthinkos/overthink/candy/charly:v2026.160.2017'

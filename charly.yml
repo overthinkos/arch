@@ -1,26 +1,24 @@
 #  overthinkos/arch — the Arch Linux image family, split out of the main
 #  opencharly repo (2026-05). Mounted as a git submodule at image/arch.
 #
-#  SINGLE-FILE config (2026-05 import-namespace cutover): every local entity
-#  (the arch-coder/charly-arch/arch-test images, the arch-pacstrap-builder +
-#  arch-pacstrap bootstrap pair, the arch + arch-pacstrap VMs, and the
-#  disposable eval beds) is inlined here. This repo VENDORS NOTHING — every
-#  layer is an `@github.com/...` ref, and the shared build.yml vocabulary +
-#  the main repo's arch base/builder arrive via `import:`.
-#
-#  import: has two shapes —
-#    * flat string  → build.yml (shared distro/builder/init vocabulary), merged
-#      into this repo's root namespace.
-#    * `charly: <ref>`  → the main opencharly repo mounted under the `charly` namespace,
-#      so `charly.arch` (every arch image's base) + `charly.arch-builder` (the pixi/npm/
-#      cargo/aur builder) resolve. Builder maps do NOT cross a namespace
-#      boundary, so each image that builds a multi-stage format declares its own
-#      `builder:` map qualified to `charly.arch-builder`.
+#  SINGLE-FILE config: every entity (the arch + arch-builder + cuda-arch-builder
+#  base/builder stack, the arch-coder/charly-arch/arch-test/vscode-test images,
+#  the arch-pacstrap-builder + arch-pacstrap bootstrap pair, the arch +
+#  arch-pacstrap VMs, and the disposable eval beds) is inlined here or discovered
+#  under box/. This repo VENDORS NOTHING — every candy layer is an
+#  `@github.com/overthinkos/overthink/candy/...` ref into the main repo. The arch
+#  base/builder stack is LOCAL (this submodule owns it after the 2026-06 box
+#  inversion), so NO namespace import is needed — every image's base is a bare
+#  local `arch`, every multi-stage builder a bare local `arch-builder`.
 #
 #  Directly buildable: `charly box build arch-coder` (the build verb defaults to
 #  this charly.yml). From the parent repo: `charly -C image/arch image build
 #  arch-coder`, or anywhere: `charly --repo overthinkos/arch image build arch-coder`.
 version: 2026.160.1301
+# Canonical repo identity. Optional now that the main↔arch cycle dissolved (main
+# imports this repo; this repo imports nothing back), but kept for self-import
+# recognition when commands run from inside the submodule.
+repo: github.com/overthinkos/arch
 defaults:
     platform:
         - linux/amd64
@@ -31,10 +29,9 @@ defaults:
     merge:
         auto: false
         max_mb: 128
-import:
-    # Main repo entities under the `charly` namespace — charly.arch (every arch image's
-    # base) + charly.arch-builder (the multi-stage pixi/npm/cargo/aur builder).
-    - charly: '@github.com/overthinkos/overthink:v2026.160.2017'
+# No namespace import: the arch base/builder stack is local to this submodule;
+# every candy layer resolves via its own `@github` ref into the main repo.
+import: []
 discover:
     - path: box
       recursive: true
@@ -47,6 +44,27 @@ eval:
     # unattended destroy+rebuild driven by `charly eval run <bed>`. These are
     # zero-side-effect beds (target: vm); there are NO operator deploy entries
     # in this repo, so there is no deploy: section.
+    #
+    # Relocated from main (2026-06 box inversion) with its vscode-test box: the
+    # disposable R10 bed for the Arch vscode direct-download install path. Bare
+    # local `box: vscode-test` (the box now lives under box/ in this submodule).
+    eval-arch-vscode-pod:
+        target: pod
+        box: vscode-test
+        disposable: true
+        lifecycle: dev
+        port: [auto]
+        description:
+            feature: Arch vscode install (version-pinned MS download, sha256-verified) — replaces the broken visual-studio-code-bin AUR
+            tag: [working]
+        eval:
+            - id: status-shows-vscode-pod
+              scope: deploy
+              command: charly status --json
+              in_container: false
+              stdout:
+                - contains: '"kind": "pod"'
+                - contains: eval-arch-vscode-pod
     eval-arch-pacstrap-vm:
         target: vm
         vm: arch-pacstrap
@@ -73,13 +91,12 @@ eval:
             # arch-builder image so the npm-building add_candy (pre-commit)
             # resolves a builder. DeploymentNode has no `builder:` map field —
             # install_opts.builder_image is the supported path (mirrors cachyos).
-            # Use the NAMESPACE short-ref (charly.arch-builder), NOT a pinned ghcr
-            # tag: a full ghcr ref is checked as-is and breaks when that tag is
-            # pruned / ghcr publishing is paused (manifest unknown). The short-ref
-            # routes through cfg.ResolveImage → newest local arch-builder, and
-            # builds it on-demand from the `charly` namespace if absent (same path
-            # arch-coder's builder: map uses).
-            builder_image: charly.arch-builder
+            # Use the local short-ref (arch-builder), NOT a pinned ghcr tag: a
+            # full ghcr ref is checked as-is and breaks when that tag is pruned /
+            # ghcr publishing is paused (manifest unknown). The short-ref routes
+            # through cfg.ResolveImage → newest local arch-builder, and builds it
+            # on-demand if absent (same path arch-coder's builder: map uses).
+            builder_image: arch-builder
         eval:
             # --- C.1  Guest identity + SSH connectivity ---------------
             - {id: guest-identity-uid, scope: deploy, command: id, stdout: {contains: "uid=1000(arch)"}}

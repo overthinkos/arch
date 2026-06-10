@@ -1,8 +1,9 @@
 # image/arch — signpost (not the rule-set)
 
-This submodule is the **Arch Linux** base image family: a `charly.yml`
-(plus per-kind sibling files) that imports the main repo under the `charly` namespace and
-`build.yml` flat.
+This submodule is the **Arch Linux** base image family: a self-contained
+`charly.yml` that OWNS the arch base/builder stack locally (`arch`,
+`arch-builder`, `cuda-arch-builder`) and pulls main's shared candy layers via
+`@github` refs — no namespace import.
 
 **Load these skills FIRST (R0):**
 

@@ -1,6 +1,6 @@
 box:
     name: arch-pacstrap-builder
-    base: charly.arch
+    base: arch
     distro:
         - arch
     build:
