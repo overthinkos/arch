@@ -6,8 +6,8 @@ box:
     name: vscode-test
     base: arch
     candy:
-        - '@github.com/overthinkos/overthink/candy/eval-keepalive:v2026.160.2017'
-        - '@github.com/overthinkos/overthink/candy/vscode:v2026.160.2017'
+        - '@github.com/overthinkos/overthink/candy/eval-keepalive:v2026.162.0856'
+        - '@github.com/overthinkos/overthink/candy/vscode:v2026.162.0856'
     description:
         feature: Arch vscode install smoke (direct-download path) — backs the eval-vscode-pod bed
         tag:
