@@ -78,9 +78,9 @@ check:
         # to depend on, and so the command: probes have ripgrep/uv/
         # pre-commit versions to verify.
         add_candy:
-            - '@github.com/overthinkos/overthink/candy/ripgrep:v2026.164.1529'
-            - '@github.com/overthinkos/overthink/candy/uv:v2026.164.1529'
-            - '@github.com/overthinkos/overthink/candy/pre-commit:v2026.164.1529'
+            - '@github.com/overthinkos/overthink/candy/ripgrep:v2026.164.2138'
+            - '@github.com/overthinkos/overthink/candy/uv:v2026.164.2138'
+            - '@github.com/overthinkos/overthink/candy/pre-commit:v2026.164.2138'
         install_opts:
             with_service: true
             allow_repo_changes: true # pacman-key + mirror tweaks
@@ -124,8 +124,8 @@ check:
                 disposable: true
                 lifecycle: dev
                 add_candy:
-                    - '@github.com/overthinkos/overthink/candy/tailscale:v2026.164.1529'
-                    - '@github.com/overthinkos/overthink/candy/tailscale-up:v2026.164.1529'
+                    - '@github.com/overthinkos/overthink/candy/tailscale:v2026.164.2138'
+                    - '@github.com/overthinkos/overthink/candy/tailscale-up:v2026.164.2138'
                 install_opts:
                     with_service: true
                     allow_root_tasks: true
@@ -150,7 +150,7 @@ check:
                 disposable: true
                 lifecycle: dev
                 add_candy:
-                    - '@github.com/overthinkos/overthink/candy/direnv:v2026.164.1529'
+                    - '@github.com/overthinkos/overthink/candy/direnv:v2026.164.2138'
                 plan:
                     - check: command=test -n "$(ls -A ~/.config/opencharly/installed/deploys/ 2>/dev/null)"
                       id: ah-deploy-recorded

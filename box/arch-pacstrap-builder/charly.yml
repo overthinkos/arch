@@ -6,4 +6,4 @@ box:
     build:
         - pac
     candy:
-        - '@github.com/overthinkos/overthink/candy/pacstrap-builder:v2026.164.1529'
+        - '@github.com/overthinkos/overthink/candy/pacstrap-builder:v2026.164.2138'
