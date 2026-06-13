@@ -8,30 +8,37 @@ candy:
             installing neovim and ripgrep. Verifiable: both binaries (nvim, rg)
             land on PATH and the packages are registered.
         tag: [working]
-        scenario:
-            - name: pacman-packages-installed
-              step:
-                - then: the neovim editor binary is installed at /usr/bin/nvim
-                  file: /usr/bin/nvim
-                  exists: true
-                - then: the ripgrep binary is installed at /usr/bin/rg
-                  file: /usr/bin/rg
-                  exists: true
     distro:
         arch:
             package:
                 - neovim
                 - ripgrep
-    eval:
-        - id: nvim-binary
-          file: /usr/bin/nvim
-          exists: true
-        - id: nvim-package
-          package: neovim
-          installed: true
-        - id: rg-binary
-          file: /usr/bin/rg
-          exists: true
-        - id: ripgrep-package
-          package: ripgrep
-          installed: true
+    scenario:
+        - name: pacman-packages-installed
+          step:
+            - then: the neovim editor binary is installed at /usr/bin/nvim
+              file: /usr/bin/nvim
+              exists: true
+            - then: the ripgrep binary is installed at /usr/bin/rg
+              file: /usr/bin/rg
+              exists: true
+        - name: nvim-binary
+          step:
+            - id: nvim-binary
+              file: /usr/bin/nvim
+              exists: true
+        - name: nvim-package
+          step:
+            - id: nvim-package
+              package: neovim
+              installed: true
+        - name: rg-binary
+          step:
+            - id: rg-binary
+              file: /usr/bin/rg
+              exists: true
+        - name: ripgrep-package
+          step:
+            - id: ripgrep-package
+              package: ripgrep
+              installed: true
