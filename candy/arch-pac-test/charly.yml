@@ -1,44 +1,36 @@
 candy:
     version: 2026.144.1443
     name: arch-pac-test
-    description:
-        feature: pacman repo install smoke test — installs neovim and ripgrep
-        narrative: |
-            Minimal candy that exercises the Arch pacman repo install path by
-            installing neovim and ripgrep. Verifiable: both binaries (nvim, rg)
-            land on PATH and the packages are registered.
-        tag: [working]
+    description: |
+        pacman repo install smoke test — installs neovim and ripgrep
+        Minimal candy that exercises the Arch pacman repo install path by
+        installing neovim and ripgrep. Verifiable: both binaries (nvim, rg)
+        land on PATH and the packages are registered.
     distro:
         arch:
             package:
                 - neovim
                 - ripgrep
-    scenario:
-        - name: pacman-packages-installed
-          step:
-            - then: the neovim editor binary is installed at /usr/bin/nvim
-              file: /usr/bin/nvim
-              exists: true
-            - then: the ripgrep binary is installed at /usr/bin/rg
-              file: /usr/bin/rg
-              exists: true
-        - name: nvim-binary
-          step:
-            - id: nvim-binary
-              file: /usr/bin/nvim
-              exists: true
-        - name: nvim-package
-          step:
-            - id: nvim-package
-              package: neovim
-              installed: true
-        - name: rg-binary
-          step:
-            - id: rg-binary
-              file: /usr/bin/rg
-              exists: true
-        - name: ripgrep-package
-          step:
-            - id: ripgrep-package
-              package: ripgrep
-              installed: true
+    plan:
+        - check: the neovim editor binary is installed at /usr/bin/nvim
+          file: /usr/bin/nvim
+          exists: true
+        - check: the ripgrep binary is installed at /usr/bin/rg
+          file: /usr/bin/rg
+          exists: true
+        - check: file=/usr/bin/nvim
+          id: nvim-binary
+          file: /usr/bin/nvim
+          exists: true
+        - check: package=neovim
+          id: nvim-package
+          package: neovim
+          installed: true
+        - check: file=/usr/bin/rg
+          id: rg-binary
+          file: /usr/bin/rg
+          exists: true
+        - check: package=ripgrep
+          id: ripgrep-package
+          package: ripgrep
+          installed: true

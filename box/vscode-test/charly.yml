@@ -8,7 +8,4 @@ box:
     candy:
         - '@github.com/overthinkos/overthink/candy/check-keepalive:v2026.164.1529'
         - '@github.com/overthinkos/overthink/candy/vscode:v2026.164.1529'
-    description:
-        feature: Arch vscode install smoke (direct-download path) — backs the check-vscode-pod bed
-        tag:
-            - working
+    description: Arch vscode install smoke (direct-download path) — backs the check-vscode-pod bed
