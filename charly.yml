@@ -4,7 +4,7 @@
 #  SINGLE-FILE config: every entity (the arch + arch-builder + cuda-arch-builder
 #  base/builder stack, the arch-coder/charly-arch/arch-test/vscode-test images,
 #  the arch-pacstrap-builder + arch-pacstrap bootstrap pair, the arch +
-#  arch-pacstrap VMs, and the disposable eval beds) is inlined here or discovered
+#  arch-pacstrap VMs, and the disposable check beds) is inlined here or discovered
 #  under box/. This repo VENDORS NOTHING — every candy layer is an
 #  `@github.com/overthinkos/overthink/candy/...` ref into the main repo. The arch
 #  base/builder stack is LOCAL (this submodule owns it after the 2026-06 box
@@ -14,7 +14,7 @@
 #  Directly buildable: `charly box build arch-coder` (the build verb defaults to
 #  this charly.yml). From the parent repo: `charly -C box/arch box build
 #  arch-coder`, or anywhere: `charly --repo overthinkos/arch box build arch-coder`.
-version: 2026.164.0002
+version: 2026.164.0004
 # Canonical repo identity. Optional now that the main↔arch cycle dissolved (main
 # imports this repo; this repo imports nothing back), but kept for self-import
 # recognition when commands run from inside the submodule.
@@ -37,18 +37,18 @@ discover:
       recursive: true
     - path: candy
       recursive: true
-eval:
-    # Disposable R10 test beds for the arch VMs (kind:eval — the 2026-05
-    # deploy→eval unification moved repo-shipped disposable beds out of
+check:
+    # Disposable R10 test beds for the arch VMs (kind:check — the 2026-05
+    # deploy→check unification moved repo-shipped disposable beds out of
     # deploy.yml). disposable: true is the sole authorization for the
-    # unattended destroy+rebuild driven by `charly eval run <bed>`. These are
+    # unattended destroy+rebuild driven by `charly check run <bed>`. These are
     # zero-side-effect beds (target: vm); there are NO operator deploy entries
     # in this repo, so there is no deploy: section.
     #
     # Relocated from main (2026-06 box inversion) with its vscode-test box: the
     # disposable R10 bed for the Arch vscode direct-download install path. Bare
     # local `box: vscode-test` (the box now lives under box/ in this submodule).
-    eval-arch-vscode-pod:
+    check-arch-vscode-pod:
         target: pod
         box: vscode-test
         disposable: true
@@ -64,15 +64,15 @@ eval:
                   in_container: false
                   stdout:
                     - contains: '"kind": "pod"'
-                    - contains: eval-arch-vscode-pod
+                    - contains: check-arch-vscode-pod
                   context:
                     - runtime
-    eval-arch-pacstrap-vm:
+    check-arch-pacstrap-vm:
         target: vm
         vm: arch-pacstrap
         disposable: true
         lifecycle: dev
-    eval-arch-vm:
+    check-arch-vm:
         target: vm
         vm: arch
         disposable: true
@@ -100,10 +100,10 @@ eval:
             # on-demand if absent (same path arch-coder's builder: map uses).
             builder_image: arch-builder
         # -----------------------------------------------------------------
-        # Bed 2: arch-host (target: host, nested in eval-arch-vm)
+        # Bed 2: arch-host (target: host, nested in check-arch-vm)
         # -----------------------------------------------------------------
         # Exercises HostDeployTarget / InstallPlan / ReverseOps / ledger
-        # code path INSIDE eval-arch-vm's guest FS via the existing
+        # code path INSIDE check-arch-vm's guest FS via the existing
         # parent-child NestedExecutor plumbing. Zero operator-side writes.
         # Layers chosen for dotfile-only side effects so the bed is about
         # exercising the code path, not installing services.
@@ -114,7 +114,7 @@ eval:
             # ---------------------------------------------------------------
             # Exercises candy/tailscale (daemon install + systemctl enable)
             # AND candy/tailscale-up (--operator + --hostname runtime task)
-            # via the nested HostDeployTarget in eval-arch-vm. The arch user
+            # via the nested HostDeployTarget in check-arch-vm. The arch user
             # has uid 1000 + passwordless wheel sudo per the cloud-init
             # config, matching the canonical charly-cachyos host shape.
             # The test bed's tailscaled is logged out (no auth performed),
@@ -157,7 +157,7 @@ eval:
                 scenario:
                     - name: ah-deploy-recorded
                       step:
-                        # Nested command runs: SSH into eval-arch-vm → exec as arch user.
+                        # Nested command runs: SSH into check-arch-vm → exec as arch user.
                         # Verify the nested host-deploy was RECORDED in the guest ledger
                         # (a deploys/*.json record exists). NB: we do NOT probe via
                         # `charly deploy show` here — the VM's charly_install.strategy: auto
@@ -248,7 +248,7 @@ eval:
               step:
                 - id: spice-framebuffer-nonzero
                   spice: screenshot
-                  artifact: /tmp/eval-arch-vm-spice.png
+                  artifact: /tmp/check-arch-vm-spice.png
                   artifact_min_bytes: 1024
                   context:
                     - runtime
@@ -311,7 +311,7 @@ eval:
                 # package-managed charly. Asserting `command -v charly` therefore
                 # contradicts the strategy. charly-installed-as-a-package-on-PATH in a
                 # VM (the localpkg-on-VM path) is proven by the main repo's
-                # eval-charly-vm bed (add_candy: charly + localpkg-pac-autoresolve).
+                # check-charly-vm bed (add_candy: charly + localpkg-pac-autoresolve).
                 - {id: ripgrep-version, command: "rg --version", stdout: {contains: ripgrep}, context: [runtime]}
             - name: uv-version
               step:
@@ -423,11 +423,11 @@ vm:
             base_user: arch
         # Disposability is NOT a VmSpec field (the schema-v3 cutover removed
         # VmSpec.Disposable / VmSpec.Lifecycle). The load-bearing copy lives on
-        # the eval.eval-arch-vm bed below (`disposable: true` authorizes the
+        # the check.check-arch-vm bed below (`disposable: true` authorizes the
         # unattended destroy+rebuild). See /charly-internals:disposable.
         #
-        # `backend: libvirt` is REQUIRED — the eval-arch-vm bed's eval list
-        # contains 8 `charly eval libvirt …` probes + 2 `charly eval spice …`
+        # `backend: libvirt` is REQUIRED — the check-arch-vm bed's check list
+        # contains 8 `charly check libvirt …` probes + 2 `charly check spice …`
         # probes that all hit the libvirt user-session daemon socket.
         # With `backend: auto` and the daemon NOT running on the
         # operator's machine, resolveVmBackend silently falls through
@@ -462,7 +462,7 @@ vm:
                 # "error while loading shared libraries".
                 #
                 # `base-devel` and `git` are required by the bed's
-                # `package:` eval probes (the eval-arch-vm eval list).
+                # `package:` check probes (the check-arch-vm check list).
                 # They were dropped in error during the runcmd cleanup
                 # of the 2026-05 R10 follow-up; re-added 2026-05-06.
                 - sudo
@@ -481,11 +481,11 @@ vm:
                 # binary post-boot via VmDeployTarget) AND timed out
                 # under load — leaving non-empty errors[] in
                 # /var/lib/cloud/data/result.json that broke the
-                # `cloud-init no-errors` eval probe.
+                # `cloud-init no-errors` check probe.
                 #
                 # `pacman-key --init && --populate archlinux` is
                 # required for post-boot pacman invocations driven
-                # by `charly deploy add eval-arch-vm <ref>` (layer install via
+                # by `charly deploy add check-arch-vm <ref>` (layer install via
                 # SSH). Without it, `pacman -Sy <pkg>` fails with
                 # `keyring is not writable / required key missing`.
                 # Cloud-init's own `packages:` step is unaffected

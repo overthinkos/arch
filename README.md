@@ -10,7 +10,7 @@ of the main repo.
 |---|---|
 | `image:` | `arch`, `arch-builder`, `cuda-arch-builder` (base/builder stack), `arch-coder`, `charly-arch`, `arch-test`, `vscode-test`, `arch-pacstrap-builder`, `arch-pacstrap` |
 | `vm:` | `arch-pacstrap` (bootstrap), `arch` (cloud-image) |
-| `deploy:` | `eval-arch-pacstrap-vm`, `eval-arch-vm` (+ nested `arch-host`, `charly-cachyos-tailscale-test`) |
+| `deploy:` | `check-arch-pacstrap-vm`, `check-arch-vm` (+ nested `arch-host`, `charly-cachyos-tailscale-test`) |
 
 ## Composition — self-contained base, candies by reference
 
