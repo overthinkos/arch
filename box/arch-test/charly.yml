@@ -9,6 +9,6 @@ box:
     builder:
         aur: arch-builder
     candy:
-        - '@github.com/overthinkos/overthink/candy/agent-forwarding:v2026.165.0934'
+        - '@github.com/overthinkos/overthink/candy/agent-forwarding:v2026.165.2208'
         - arch-pac-test
         - arch-aur-test
