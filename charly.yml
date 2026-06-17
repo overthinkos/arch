@@ -53,7 +53,7 @@ check:
         box: vscode-test
         disposable: true
         lifecycle: dev
-        description: Arch vscode install (version-pinned MS download, sha256-verified) — replaces the broken visual-studio-code-bin AUR
+        description: Sole proof of the Arch vscode install via the version-pinned, sha256-verified Microsoft direct-download that replaced the broken visual-studio-code-bin AUR package. Builds and deploys the vscode-test pod (arch base + check-keepalive supervisord + vscode), verifies /usr/bin/code and a code --version semver via the baked vscode plan, the supervisord keepalive RUNNING, and that charly status --json shows the running pod (status-shows-pod).
         plan:
             - check: command=charly status --json
               id: status-shows-vscode-pod
@@ -69,11 +69,24 @@ check:
         vm: arch-pacstrap
         disposable: true
         lifecycle: dev
+        description: Sole proof that the from-scratch arch-pacstrap-builder bootstrap path produces a bootable UEFI Arch rootfs VM (distinct from the cachyos-pacstrap path). The privileged arch-pacstrap-builder pacstraps an Arch rootfs (sudo/openssh/qemu-guest-agent/cloud-init/grub/efibootmgr) into a 20G ext4 UEFI q35 disk and creates the libvirt VM, then asserts boot-to-steady-state via a libvirt info domain-state running probe and an SSH boot-witness reading the guest /etc/os-release.
+        plan:
+            - check: libvirt=info
+              id: pacstrap-libvirt-domain-running
+              libvirt: info
+              stdout: {contains: running}
+              context: [runtime]
+            - check: command=cat /etc/os-release
+              id: pacstrap-guest-os-release-arch
+              command: "cat /etc/os-release"
+              stdout: {contains: "ID=arch"}
+              context: [runtime]
     check-arch-vm:
         target: vm
         vm: arch
         disposable: true
         lifecycle: dev
+        description: Sole runnable non-GPU bed for deterministic SPICE and the 8-method libvirt-RPC probe surface, and the only bed proving add_candy overlay install and nested local-target host deploys over VmDeployTarget and NestedExecutor. Boots the Arch cloud-image libvirt VM (SPICE socket + virtio-gpu + qemu-guest-agent), scps the host charly binary in, overlays ripgrep/uv/pre-commit, runs ~50 guest probes (command/package/service/port/process/user/group/interface/mount/dns/addr plus spice status/screenshot plus the 8 libvirt-RPC probes plus a kernel-param sysctl assertion), and drives two nested local-target beds (tailscale runtime wiring; direnv plus the install-ledger).
         # Minimal in-guest tooling so arch-host (child) has something
         # to depend on, and so the command: probes have ripgrep/uv/
         # pre-commit versions to verify.
@@ -178,7 +191,7 @@ check:
                       command: "ss -tlnp 2>/dev/null | wc -l"
                       stdout: {matches: "^[0-9]+"}
                       context: [runtime]
-                    - agent-check: agent-check
+                    - check: the matching verb confirms arch-host appears in the rendered list
                       id: ah-matching-list
                       matching: "arch-host in list"
                       contains: {contains: "arch"}
@@ -398,6 +411,11 @@ check:
               id: mount-root-mounted
               mount: /
               context: [runtime]
+            - check: kernel-param=kernel.ostype
+              id: kernel-ostype-linux
+              kernel-param: kernel.ostype
+              value: Linux
+              context: [runtime]
             - check: command=getent hosts archlinux.org
               id: dns-arch-org
               command: "getent hosts archlinux.org"
@@ -418,7 +436,7 @@ check:
               reachable: true
               timeout: "5s"
               context: [runtime]
-            - agent-check: agent-check
+            - check: the matching verb smoke-test resolves the arch literal
               id: matching-smoke
               matching: "arch"
               contains: {equals: "arch"}
