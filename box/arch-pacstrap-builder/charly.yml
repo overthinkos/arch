@@ -1,9 +1,11 @@
-box:
-    name: arch-pacstrap-builder
-    base: arch
-    distro:
-        - arch
-    build:
-        - pac
-    candy:
-        - '@github.com/overthinkos/overthink/candy/pacstrap-builder:v2026.166.1222'
+arch-pacstrap-builder:
+    box:
+        base: arch
+        build:
+            - pac
+    arch-pacstrap-builder-distro:
+        distro:
+            - arch
+    arch-pacstrap-builder-candy:
+        candy:
+            - '@github.com/overthinkos/overthink/candy/pacstrap-builder:v2026.166.1222'

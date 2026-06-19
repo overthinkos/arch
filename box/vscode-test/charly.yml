@@ -1,11 +1,8 @@
-box:
-    # Minimal Arch pod backing the check-vscode-pod bed — the disposable R10 for the
-    # vscode layer's Arch direct-download install path (version-pin cutover). The
-    # `supervisord` layer keeps the pod alive for check-live; the vscode layer's baked
-    # build-scope check (code exists + `code --version`) runs at image + live scope.
-    name: vscode-test
-    base: arch
-    candy:
-        - '@github.com/overthinkos/overthink/candy/check-keepalive:v2026.166.1222'
-        - '@github.com/overthinkos/overthink/candy/vscode:v2026.166.1222'
-    description: Arch vscode install smoke (direct-download path) — backs the check-vscode-pod bed
+vscode-test:
+    box:
+        base: arch
+        description: Arch vscode install smoke (direct-download path) — backs the check-vscode-pod bed
+    vscode-test-candy:
+        candy:
+            - '@github.com/overthinkos/overthink/candy/check-keepalive:v2026.166.1222'
+            - '@github.com/overthinkos/overthink/candy/vscode:v2026.166.1222'
