@@ -8,4 +8,4 @@ arch-pacstrap-builder:
             - arch
     arch-pacstrap-builder-candy:
         candy:
-            - '@github.com/overthinkos/overthink/candy/pacstrap-builder:v2026.166.1222'
+            - '@github.com/overthinkos/overthink/candy/pacstrap-builder:v2026.170.1105'

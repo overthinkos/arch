@@ -94,8 +94,8 @@ check-arch-vm:
             description: R10 bed for tailscale + tailscale-up runtime wiring
         charly-cachyos-tailscale-test-add_candy:
             add_candy:
-                - '@github.com/overthinkos/overthink/candy/tailscale:v2026.166.1222'
-                - '@github.com/overthinkos/overthink/candy/tailscale-up:v2026.166.1222'
+                - '@github.com/overthinkos/overthink/candy/tailscale:v2026.170.1105'
+                - '@github.com/overthinkos/overthink/candy/tailscale-up:v2026.170.1105'
         charly-cachyos-tailscale-test-install_opts:
             install_opts:
                 with_service: true
@@ -123,7 +123,7 @@ check-arch-vm:
             lifecycle: dev
         arch-host-add_candy:
             add_candy:
-                - '@github.com/overthinkos/overthink/candy/direnv:v2026.166.1222'
+                - '@github.com/overthinkos/overthink/candy/direnv:v2026.170.1105'
         ah-deploy-recorded:
             check: command=test -n "$(ls -A ~/.config/opencharly/installed/deploys/ 2>/dev/null)"
             id: ah-deploy-recorded
@@ -167,9 +167,9 @@ check-arch-vm:
         # to depend on, and so the command: probes have ripgrep/uv/
         # pre-commit versions to verify.
         add_candy:
-            - '@github.com/overthinkos/overthink/candy/ripgrep:v2026.166.1222'
-            - '@github.com/overthinkos/overthink/candy/uv:v2026.166.1222'
-            - '@github.com/overthinkos/overthink/candy/pre-commit:v2026.166.1222'
+            - '@github.com/overthinkos/overthink/candy/ripgrep:v2026.170.1105'
+            - '@github.com/overthinkos/overthink/candy/uv:v2026.170.1105'
+            - '@github.com/overthinkos/overthink/candy/pre-commit:v2026.170.1105'
     check-arch-vm-install_opts:
         install_opts:
             with_service: true
