@@ -1,5 +1,5 @@
 arch-pacstrap-builder:
-    box:
+    candy:
         base: arch
         build:
             - pac

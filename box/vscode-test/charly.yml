@@ -1,5 +1,5 @@
 vscode-test:
-    box:
+    candy:
         base: arch
         description: Arch vscode install smoke (direct-download path) — backs the check-vscode-pod bed
     vscode-test-candy:

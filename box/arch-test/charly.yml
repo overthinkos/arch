@@ -1,5 +1,5 @@
 arch-test:
-    box:
+    candy:
         base: arch
         build:
             - pac

@@ -1,5 +1,5 @@
 arch-builder:
-    box:
+    candy:
         base: arch
         produce:
             - pixi

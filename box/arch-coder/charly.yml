@@ -1,5 +1,5 @@
 arch-coder:
-    box:
+    candy:
         # base: the local `arch` base (owned by this submodule); distro:/build:
         # inherit from it.
         base: arch

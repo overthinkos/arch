@@ -1,5 +1,5 @@
 cuda-arch-builder:
-    box:
+    candy:
         base: arch-builder
         produce:
             - pixi

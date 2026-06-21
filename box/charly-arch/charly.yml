@@ -1,5 +1,5 @@
 charly-arch:
-    box:
+    candy:
         base: arch
     charly-arch-candy:
         candy:

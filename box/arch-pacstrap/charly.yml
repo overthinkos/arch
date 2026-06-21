@@ -1,5 +1,5 @@
 arch-pacstrap:
-    box:
+    candy:
         # Bootstrap-from-scratch Arch rootfs via pacstrap inside a privileged
         # builder container. bootstrap_builder_image points at the LOCAL
         # arch-pacstrap-builder image above (defined in this repo), so it stays
