@@ -14,7 +14,7 @@
 #  Directly buildable: `charly box build arch-coder` (the build verb defaults to
 #  this charly.yml). From the parent repo: `charly -C box/arch box build
 #  arch-coder`, or anywhere: `charly --repo overthinkos/arch box build arch-coder`.
-version: 2026.172.0002
+version: 2026.172.0004
 # Canonical repo identity. Optional now that the main↔arch cycle dissolved (main
 # imports this repo; this repo imports nothing back), but kept for self-import
 # recognition when commands run from inside the submodule.
@@ -48,8 +48,8 @@ discover:
 # disposable R10 bed for the Arch vscode direct-download install path. Bare
 # local `box: vscode-test` (the box now lives under box/ in this submodule).
 check-arch-vscode-pod:
-    bundle:
-        box: vscode-test
+    pod:
+        image: vscode-test
         disposable: true
         lifecycle: dev
         description: Sole proof of the Arch vscode install via the version-pinned, sha256-verified Microsoft direct-download that replaced the broken visual-studio-code-bin AUR package. Builds and deploys the vscode-test pod (arch base + check-keepalive supervisord + vscode), verifies /usr/bin/code and a code --version semver via the baked vscode plan, the supervisord keepalive RUNNING, and that charly status --json shows the running pod (status-shows-pod).
@@ -64,8 +64,8 @@ check-arch-vscode-pod:
         context:
             - runtime
 check-arch-pacstrap-vm:
-    bundle:
-        vm: arch-pacstrap
+    vm:
+        from: arch-pacstrap
         disposable: true
         lifecycle: dev
         description: Sole proof that the from-scratch arch-pacstrap-builder bootstrap path produces a bootable UEFI Arch rootfs VM (distinct from the cachyos-pacstrap path). The privileged arch-pacstrap-builder pacstraps an Arch rootfs (sudo/openssh/qemu-guest-agent/cloud-init/grub/efibootmgr) into a 20G ext4 UEFI q35 disk and creates the libvirt VM, then asserts boot-to-steady-state via a libvirt info domain-state running probe and an SSH boot-witness reading the guest /etc/os-release.
@@ -82,8 +82,8 @@ check-arch-pacstrap-vm:
         stdout: {contains: "ID=arch"}
         context: [runtime]
 check-arch-vm:
-    bundle:
-        vm: arch
+    vm:
+        from: arch
         disposable: true
         lifecycle: dev
         description: Sole runnable non-GPU bed for deterministic SPICE and the 8-method libvirt-RPC probe surface, and the only bed proving add_candy overlay install and nested local-target host deploys over VmDeployTarget and NestedExecutor. Boots the Arch cloud-image libvirt VM (SPICE socket + virtio-gpu + qemu-guest-agent), scps the host charly binary in, overlays ripgrep/uv/pre-commit, runs ~50 guest probes (command/package/service/port/process/user/group/interface/mount/dns/addr plus spice status/screenshot plus the 8 libvirt-RPC probes plus a kernel-param sysctl assertion), and drives two nested local-target beds (tailscale runtime wiring; direnv plus the install-ledger).
