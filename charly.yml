@@ -14,7 +14,7 @@
 #  Directly buildable: `charly box build arch-coder` (the build verb defaults to
 #  this charly.yml). From the parent repo: `charly -C box/arch box build
 #  arch-coder`, or anywhere: `charly --repo overthinkos/arch box build arch-coder`.
-version: 2026.173.1616
+version: 2026.173.1742
 # Canonical repo identity. Optional now that the main↔arch cycle dissolved (main
 # imports this repo; this repo imports nothing back), but kept for self-import
 # recognition when commands run from inside the submodule.
@@ -413,15 +413,19 @@ check-arch-vm:
     port-22-listening:
         check: port=22
         id: port-22-listening
-        port: 22
-        listening: true
         context: [runtime]
+        plugin: port
+        plugin_input:
+            port: 22
+            listening: true
     proc-sshd-running:
         check: process=sshd
         id: proc-sshd-running
-        process: sshd
-        running: true
         context: [runtime]
+        plugin: process
+        plugin_input:
+            process: sshd
+            running: true
     user-arch-present:
         check: user=arch
         id: user-arch-present
@@ -464,9 +468,11 @@ check-arch-vm:
     dns-check-operator-side:
         check: dns=archlinux.org
         id: dns-check-operator-side
-        dns: archlinux.org
-        resolvable: true
         context: [runtime]
+        plugin: dns
+        plugin_input:
+            dns: archlinux.org
+            resolvable: true
     addr-ssh-reachable:
         check: addr=127.0.0.1:2224
         id: addr-ssh-reachable
