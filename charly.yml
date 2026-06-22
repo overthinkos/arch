@@ -159,8 +159,8 @@ check-arch-vm:
         ah-matching-list:
             check: the matching verb confirms arch-host appears in the rendered list
             id: ah-matching-list
-            matching: "arch-host in list"
-            contains: {contains: "arch"}
+            plugin: matching
+            plugin_input: {matching: "arch-host in list", contains: {contains: "arch"}}
             context: [runtime]
     check-arch-vm-add_candy:
         # Minimal in-guest tooling so arch-host (child) has something
@@ -477,8 +477,8 @@ check-arch-vm:
     matching-smoke:
         check: the matching verb smoke-test resolves the arch literal
         id: matching-smoke
-        matching: "arch"
-        contains: {equals: "arch"}
+        plugin: matching
+        plugin_input: {matching: "arch", contains: {equals: "arch"}}
         context: [runtime]
 arch-pacstrap:
     vm:
