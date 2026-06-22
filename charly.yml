@@ -14,7 +14,7 @@
 #  Directly buildable: `charly box build arch-coder` (the build verb defaults to
 #  this charly.yml). From the parent repo: `charly -C box/arch box build
 #  arch-coder`, or anywhere: `charly --repo overthinkos/arch box build arch-coder`.
-version: 2026.173.1742
+version: 2026.173.2300
 # Canonical repo identity. Optional now that the main↔arch cycle dissolved (main
 # imports this repo; this repo imports nothing back), but kept for self-import
 # recognition when commands run from inside the submodule.
@@ -440,9 +440,11 @@ check-arch-vm:
     iface-lo-up:
         check: interface=lo
         id: iface-lo-up
-        interface: lo
-        mtu: 65536
         context: [runtime]
+        plugin: interface
+        plugin_input:
+            interface: lo
+            mtu: 65536
     mount-root-mounted:
         check: mount=/
         id: mount-root-mounted
@@ -476,10 +478,12 @@ check-arch-vm:
     addr-ssh-reachable:
         check: addr=127.0.0.1:2224
         id: addr-ssh-reachable
-        addr: "127.0.0.1:2224"
-        reachable: true
         timeout: "5s"
         context: [runtime]
+        plugin: addr
+        plugin_input:
+            addr: "127.0.0.1:2224"
+            reachable: true
     matching-smoke:
         check: the matching verb smoke-test resolves the arch literal
         id: matching-smoke
