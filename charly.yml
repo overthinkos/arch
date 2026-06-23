@@ -664,16 +664,16 @@ arch:
         cloud_init:
             timezone: UTC
             package:
-                # The host's charly binary (PKGBUILD `depends=()`) is built
-                # with cgo for SPICE audio: `gordonklaus/portaudio`
-                # links against libportaudio.so.2; the SPICE protocol
-                # path also pulls `libopusfile.so.0` and `libopus.so.0`
-                # transitively. Under `charly_install.strategy: auto` the
-                # host binary is scp'd into the guest, so the guest
-                # MUST ship those .so files — `portaudio` and
-                # `opusfile` (which pulls `opus`) cover all three.
-                # Without any of them, `charly version` exits 127 with
-                # "error while loading shared libraries".
+                # The host's charly binary (the one PKGBUILD builds) is
+                # cgo-free for SPICE audio: the SPICE audio channels (the
+                # sole opus/portaudio cgo consumers) were dep-shed out of
+                # core into the out-of-tree `candy/plugin-spice`, gated
+                # behind `-tags spice_audio`. `ldd $(command -v charly)`
+                # shows no libportaudio/libopus, so under
+                # `charly_install.strategy: auto` the scp'd host binary
+                # runs in the guest with NO portaudio/opusfile installed.
+                # Only a host/guest that opts into the `spice_audio`
+                # plugin-spice build needs them — not the default toolchain.
                 #
                 # `base-devel` and `git` are required by the bed's
                 # `package:` check probes (the check-arch-vm check list).
@@ -682,8 +682,6 @@ arch:
                 - sudo
                 - spice-vdagent
                 - qemu-guest-agent
-                - portaudio
-                - opusfile
                 - base-devel
                 - git
             runcmd:
