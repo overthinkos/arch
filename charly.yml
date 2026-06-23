@@ -14,7 +14,7 @@
 #  Directly buildable: `charly box build arch-coder` (the build verb defaults to
 #  this charly.yml). From the parent repo: `charly -C box/arch box build
 #  arch-coder`, or anywhere: `charly --repo overthinkos/arch box build arch-coder`.
-version: 2026.173.2300
+version: 2026.174.0100
 # Canonical repo identity. Optional now that the main↔arch cycle dissolved (main
 # imports this repo; this repo imports nothing back), but kept for self-import
 # recognition when commands run from inside the submodule.
@@ -435,8 +435,10 @@ check-arch-vm:
     group-wheel-present:
         check: group=wheel
         id: group-wheel-present
-        unix_group: wheel
         context: [runtime]
+        plugin: unix_group
+        plugin_input:
+            unix_group: wheel
     iface-lo-up:
         check: interface=lo
         id: iface-lo-up
