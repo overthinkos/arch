@@ -18,10 +18,12 @@ arch-aur-test:
         exists: true
     arch-aur-test-step-1:
         check: yay runs and reports its version
-        command: /usr/bin/yay --version
         exit_status: 0
         stdout:
             - matches: "yay v[0-9]"
+        plugin: command
+        plugin_input:
+            command: /usr/bin/yay --version
     yay-binary:
         check: file=/usr/bin/yay
         id: yay-binary
@@ -30,7 +32,9 @@ arch-aur-test:
     yay-version:
         check: command=/usr/bin/yay --version
         id: yay-version
-        command: /usr/bin/yay --version
         exit_status: 0
         stdout:
             - matches: "yay v[0-9]"
+        plugin: command
+        plugin_input:
+            command: /usr/bin/yay --version

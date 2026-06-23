@@ -14,7 +14,7 @@
 #  Directly buildable: `charly box build arch-coder` (the build verb defaults to
 #  this charly.yml). From the parent repo: `charly -C box/arch box build
 #  arch-coder`, or anywhere: `charly --repo overthinkos/arch box build arch-coder`.
-version: 2026.174.0300
+version: 2026.174.0500
 # Canonical repo identity. Optional now that the main↔arch cycle dissolved (main
 # imports this repo; this repo imports nothing back), but kept for self-import
 # recognition when commands run from inside the submodule.
@@ -56,13 +56,15 @@ check-arch-vscode-pod:
     status-shows-vscode-pod:
         check: command=charly status --json
         id: status-shows-vscode-pod
-        command: charly status --json
-        in_container: false
         stdout:
             - contains: '"kind": "pod"'
             - contains: check-arch-vscode-pod
         context:
             - runtime
+        plugin: command
+        plugin_input:
+            command: charly status --json
+            in_container: false
 check-arch-pacstrap-vm:
     vm:
         from: arch-pacstrap
@@ -78,9 +80,11 @@ check-arch-pacstrap-vm:
     pacstrap-guest-os-release-arch:
         check: command=cat /etc/os-release
         id: pacstrap-guest-os-release-arch
-        command: "cat /etc/os-release"
         stdout: {contains: "ID=arch"}
         context: [runtime]
+        plugin: command
+        plugin_input:
+            command: "cat /etc/os-release"
 check-arch-vm:
     vm:
         from: arch
@@ -103,20 +107,26 @@ check-arch-vm:
         tt-tailscale-binary:
             check: command=test -x /usr/bin/tailscale && test -x /usr/sbin/tailscaled
             id: tt-tailscale-binary
-            command: "test -x /usr/bin/tailscale && test -x /usr/sbin/tailscaled"
             context: [runtime]
+            plugin: command
+            plugin_input:
+                command: "test -x /usr/bin/tailscale && test -x /usr/sbin/tailscaled"
         tt-tailscaled-active:
             check: command=systemctl is-active tailscaled
             id: tt-tailscaled-active
-            command: "systemctl is-active tailscaled"
             stdout: {equals: active}
             context: [runtime]
+            plugin: command
+            plugin_input:
+                command: "systemctl is-active tailscaled"
         tt-tailscaled-enabled:
             check: command=systemctl is-enabled tailscaled.service
             id: tt-tailscaled-enabled
-            command: "systemctl is-enabled tailscaled.service"
             stdout: {matches: "^enabled"}
             context: [runtime]
+            plugin: command
+            plugin_input:
+                command: "systemctl is-enabled tailscaled.service"
     arch-host:
         local:
             disposable: true
@@ -127,23 +137,31 @@ check-arch-vm:
         ah-deploy-recorded:
             check: command=test -n "$(ls -A ~/.config/opencharly/installed/deploys/ 2>/dev/null)"
             id: ah-deploy-recorded
-            command: "test -n \"$(ls -A ~/.config/opencharly/installed/deploys/ 2>/dev/null)\""
             context: [runtime]
+            plugin: command
+            plugin_input:
+                command: "test -n \"$(ls -A ~/.config/opencharly/installed/deploys/ 2>/dev/null)\""
         ah-direnv-version:
             check: command=direnv --version
             id: ah-direnv-version
-            command: "direnv --version"
             context: [runtime]
+            plugin: command
+            plugin_input:
+                command: "direnv --version"
         ah-ledger-deploys-dir:
             check: command=test -d /home/arch/.config/opencharly/installed/deploys
             id: ah-ledger-deploys-dir
-            command: "test -d /home/arch/.config/opencharly/installed/deploys"
             context: [runtime]
+            plugin: command
+            plugin_input:
+                command: "test -d /home/arch/.config/opencharly/installed/deploys"
         ah-ledger-layers-dir:
             check: command=test -d /home/arch/.config/opencharly/installed/layers
             id: ah-ledger-layers-dir
-            command: "test -d /home/arch/.config/opencharly/installed/layers"
             context: [runtime]
+            plugin: command
+            plugin_input:
+                command: "test -d /home/arch/.config/opencharly/installed/layers"
         ah-direnv-installed:
             check: package=direnv
             id: ah-direnv-installed
@@ -153,9 +171,11 @@ check-arch-vm:
         ah-no-listeners:
             check: command=ss -tlnp 2>/dev/null | wc -l
             id: ah-no-listeners
-            command: "ss -tlnp 2>/dev/null | wc -l"
             stdout: {matches: "^[0-9]+"}
             context: [runtime]
+            plugin: command
+            plugin_input:
+                command: "ss -tlnp 2>/dev/null | wc -l"
         ah-matching-list:
             check: the matching verb confirms arch-host appears in the rendered list
             id: ah-matching-list
@@ -189,78 +209,104 @@ check-arch-vm:
     guest-identity-uid:
         check: command=id
         id: guest-identity-uid
-        command: id
         stdout: {contains: "uid=1000(arch)"}
         context: [runtime]
+        plugin: command
+        plugin_input:
+            command: id
     guest-identity-wheel:
         check: command=id
         id: guest-identity-wheel
-        command: id
         stdout: {contains: wheel}
         context: [runtime]
+        plugin: command
+        plugin_input:
+            command: id
     guest-hostname-nonempty:
         check: command=cat /etc/hostname
         id: guest-hostname-nonempty
-        command: "cat /etc/hostname"
         stdout: {matches: ".+"}
         context: [runtime]
+        plugin: command
+        plugin_input:
+            command: "cat /etc/hostname"
     guest-os-release-arch:
         check: command=cat /etc/os-release
         id: guest-os-release-arch
-        command: "cat /etc/os-release"
         stdout: {contains: "ID=arch"}
         context: [runtime]
+        plugin: command
+        plugin_input:
+            command: "cat /etc/os-release"
     guest-sudo-nopasswd:
         check: command=sudo -n whoami
         id: guest-sudo-nopasswd
-        command: "sudo -n whoami"
         stdout: {equals: root}
         context: [runtime]
+        plugin: command
+        plugin_input:
+            command: "sudo -n whoami"
     guest-kernel-release:
         check: command=uname -r
         id: guest-kernel-release
-        command: "uname -r"
         stdout: {matches: "[0-9]+\\.[0-9]+"}
         context: [runtime]
+        plugin: command
+        plugin_input:
+            command: "uname -r"
     cloud-init-status-done:
         check: command=cloud-init status --wait --long
         id: cloud-init-status-done
-        command: "cloud-init status --wait --long"
         stdout: {contains: "status: done"}
         context: [runtime]
+        plugin: command
+        plugin_input:
+            command: "cloud-init status --wait --long"
     cloud-init-instance-dir:
         check: command=test -d /var/lib/cloud/instance
         id: cloud-init-instance-dir
-        command: "test -d /var/lib/cloud/instance"
         context: [runtime]
+        plugin: command
+        plugin_input:
+            command: "test -d /var/lib/cloud/instance"
     cloud-init-no-errors:
         check: command=cat /var/lib/cloud/data/result.json
         id: cloud-init-no-errors
-        command: "cat /var/lib/cloud/data/result.json"
         stdout: {contains: "\"errors\": []"}
         context: [runtime]
+        plugin: command
+        plugin_input:
+            command: "cat /var/lib/cloud/data/result.json"
     spice-vdagentd-active:
         check: command=systemctl is-active spice-vdagentd
         id: spice-vdagentd-active
-        command: "systemctl is-active spice-vdagentd"
         stdout: {equals: active}
         context: [runtime]
+        plugin: command
+        plugin_input:
+            command: "systemctl is-active spice-vdagentd"
     spice-vdagentd-enabled:
         check: command=systemctl is-enabled spice-vdagentd
         id: spice-vdagentd-enabled
-        command: "systemctl is-enabled spice-vdagentd"
         stdout: {matches: "^(enabled|static)"}
         context: [runtime]
+        plugin: command
+        plugin_input:
+            command: "systemctl is-enabled spice-vdagentd"
     virtio-gpu-module:
         check: command=lsmod | grep -q virtio_gpu
         id: virtio-gpu-module
-        command: "lsmod | grep -q virtio_gpu"
         context: [runtime]
+        plugin: command
+        plugin_input:
+            command: "lsmod | grep -q virtio_gpu"
     dri-card0-present:
         check: command=test -e /dev/dri/card0
         id: dri-card0-present
-        command: "test -e /dev/dri/card0"
         context: [runtime]
+        plugin: command
+        plugin_input:
+            command: "test -e /dev/dri/card0"
     spice-status-main:
         check: spice=status
         id: spice-status-main
@@ -327,65 +373,87 @@ check-arch-vm:
     pacman-key-populated:
         check: command=pacman-key --list-keys arch 2>&1 | grep -q pub
         id: pacman-key-populated
-        command: "pacman-key --list-keys arch 2>&1 | grep -q pub"
         context: [runtime]
+        plugin: command
+        plugin_input:
+            command: "pacman-key --list-keys arch 2>&1 | grep -q pub"
     pacman-repos-reachable:
         check: command=sudo pacman -Sy --noconfirm
         id: pacman-repos-reachable
-        command: "sudo pacman -Sy --noconfirm"
         context: [runtime]
+        plugin: command
+        plugin_input:
+            command: "sudo pacman -Sy --noconfirm"
     ssh-authorized-keys:
         check: command=test -f /home/arch/.ssh/authorized_keys
         id: ssh-authorized-keys
-        command: "test -f /home/arch/.ssh/authorized_keys"
         context: [runtime]
+        plugin: command
+        plugin_input:
+            command: "test -f /home/arch/.ssh/authorized_keys"
     ssh-ed25519-key-count:
         check: command=grep -c ssh-ed25519 /home/arch/.ssh/authorized_keys
         id: ssh-ed25519-key-count
-        command: "grep -c ssh-ed25519 /home/arch/.ssh/authorized_keys"
         stdout: {matches: "[1-9]"}
         context: [runtime]
+        plugin: command
+        plugin_input:
+            command: "grep -c ssh-ed25519 /home/arch/.ssh/authorized_keys"
     cpu-count-4:
         check: command=nproc
         id: cpu-count-4
-        command: nproc
         stdout: {matches: "^4"}
         context: [runtime]
+        plugin: command
+        plugin_input:
+            command: nproc
     mem-8g-ballpark:
         check: command=awk '/MemTotal/ {print int($2/1024/1024)}' /proc/meminfo
         id: mem-8g-ballpark
-        command: "awk '/MemTotal/ {print int($2/1024/1024)}' /proc/meminfo"
         stdout: {matches: "^[78]"}
         context: [runtime]
+        plugin: command
+        plugin_input:
+            command: "awk '/MemTotal/ {print int($2/1024/1024)}' /proc/meminfo"
     disk-ballpark:
         check: command=df -BG / | awk 'NR==2 {gsub("G","",$2); print int($2)}'
         id: disk-ballpark
-        command: "df -BG / | awk 'NR==2 {gsub(\"G\",\"\",$2); print int($2)}'"
         stdout: {matches: "^([1-9][0-9]|[1-9][0-9][0-9])"}
         context: [runtime]
+        plugin: command
+        plugin_input:
+            command: "df -BG / | awk 'NR==2 {gsub(\"G\",\"\",$2); print int($2)}'"
     ripgrep-version:
         check: command=rg --version
         id: ripgrep-version
-        command: "rg --version"
         stdout: {contains: ripgrep}
         context: [runtime]
+        plugin: command
+        plugin_input:
+            command: "rg --version"
     uv-version:
         check: command=uv --version
         id: uv-version
-        command: "uv --version"
         stdout: {contains: "uv "}
         context: [runtime]
+        plugin: command
+        plugin_input:
+            command: "uv --version"
     pre-commit-version:
         check: command=pre-commit --version
         id: pre-commit-version
-        command: "pre-commit --version"
         stdout: {contains: pre-commit}
         context: [runtime]
+        plugin: command
+        plugin_input:
+            command: "pre-commit --version"
     tooling-on-path:
         check: command=command -v rg uv pre-commit
         id: tooling-on-path
-        command: "command -v rg uv pre-commit"
         context: [runtime]
+        plugin: command
+        plugin_input:
+            command: "command -v rg uv pre-commit"
     pkg-base-devel-present:
         check: package=base-devel
         id: pkg-base-devel-present
@@ -467,14 +535,18 @@ check-arch-vm:
     dns-arch-org:
         check: command=getent hosts archlinux.org
         id: dns-arch-org
-        command: "getent hosts archlinux.org"
         context: [runtime]
+        plugin: command
+        plugin_input:
+            command: "getent hosts archlinux.org"
     https-arch-org:
         check: command=curl -sfo /dev/null -w '%{http_code}' https://archlinux.org/
         id: https-arch-org
-        command: "curl -sfo /dev/null -w '%{http_code}' https://archlinux.org/"
         stdout: {matches: "^(20[0-9]|30[0-9])"}
         context: [runtime]
+        plugin: command
+        plugin_input:
+            command: "curl -sfo /dev/null -w '%{http_code}' https://archlinux.org/"
     dns-check-operator-side:
         check: dns=archlinux.org
         id: dns-check-operator-side
