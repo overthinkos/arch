@@ -187,11 +187,18 @@ check-arch-vm:
     check-arch-vm-add_candy:
         # Minimal in-guest tooling so arch-host (child) has something
         # to depend on, and so the command: probes have ripgrep/uv/
-        # pre-commit versions to verify.
+        # pre-commit versions to verify. plugin-spice is the out-of-tree
+        # host-side plugin serving the `spice:` check verb: the bed's spice
+        # checks are authored INLINE in the plan with no candy in the image
+        # closure requiring it, so it rides in here and the host check runner
+        # loads it via the deploy's add_candy (ScanAllCandyWithConfigOpts'
+        # ExtraCandyRefs) — the spice analogue of how plugin-kube/plugin-adb
+        # are required by k3s-server/android-emulator-layer.
         add_candy:
             - '@github.com/overthinkos/overthink/candy/ripgrep:v2026.174.0425'
             - '@github.com/overthinkos/overthink/candy/uv:v2026.174.0425'
             - '@github.com/overthinkos/overthink/candy/pre-commit:v2026.174.0425'
+            - '@github.com/overthinkos/overthink/candy/plugin-spice:v2026.174.2112'
     check-arch-vm-install_opts:
         install_opts:
             with_service: true
