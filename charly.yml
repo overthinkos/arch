@@ -14,7 +14,7 @@
 #  Directly buildable: `charly box build arch-coder` (the build verb defaults to
 #  this charly.yml). From the parent repo: `charly -C box/arch box build
 #  arch-coder`, or anywhere: `charly --repo overthinkos/arch box build arch-coder`.
-version: 2026.174.0500
+version: 2026.174.0700
 # Canonical repo identity. Optional now that the main↔arch cycle dissolved (main
 # imports this repo; this repo imports nothing back), but kept for self-import
 # recognition when commands run from inside the submodule.
@@ -469,15 +469,19 @@ check-arch-vm:
     svc-spice-vdagentd-running:
         check: service=spice-vdagentd
         id: svc-spice-vdagentd-running
-        service: spice-vdagentd
-        running: true
         context: [runtime]
+        plugin: service
+        plugin_input:
+            service: spice-vdagentd
+            running: true
     svc-sshd-running:
         check: service=sshd
         id: svc-sshd-running
-        service: sshd
-        running: true
         context: [runtime]
+        plugin: service
+        plugin_input:
+            service: sshd
+            running: true
     port-22-listening:
         check: port=22
         id: port-22-listening
