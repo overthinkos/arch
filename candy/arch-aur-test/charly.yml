@@ -14,8 +14,10 @@ arch-aur-test:
                         - yay-bin
     arch-aur-test-step-0:
         check: the AUR-installed yay binary is present at /usr/bin/yay
-        file: /usr/bin/yay
-        exists: true
+        plugin: file
+        plugin_input:
+            file: /usr/bin/yay
+            exists: true
     arch-aur-test-step-1:
         check: yay runs and reports its version
         exit_status: 0
@@ -27,8 +29,10 @@ arch-aur-test:
     yay-binary:
         check: file=/usr/bin/yay
         id: yay-binary
-        file: /usr/bin/yay
-        exists: true
+        plugin: file
+        plugin_input:
+            file: /usr/bin/yay
+            exists: true
     yay-version:
         check: command=/usr/bin/yay --version
         id: yay-version

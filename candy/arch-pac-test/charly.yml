@@ -14,17 +14,23 @@ arch-pac-test:
                     - ripgrep
     arch-pac-test-step-0:
         check: the neovim editor binary is installed at /usr/bin/nvim
-        file: /usr/bin/nvim
-        exists: true
+        plugin: file
+        plugin_input:
+            file: /usr/bin/nvim
+            exists: true
     arch-pac-test-step-1:
         check: the ripgrep binary is installed at /usr/bin/rg
-        file: /usr/bin/rg
-        exists: true
+        plugin: file
+        plugin_input:
+            file: /usr/bin/rg
+            exists: true
     nvim-binary:
         check: file=/usr/bin/nvim
         id: nvim-binary
-        file: /usr/bin/nvim
-        exists: true
+        plugin: file
+        plugin_input:
+            file: /usr/bin/nvim
+            exists: true
     nvim-package:
         check: package=neovim
         id: nvim-package
@@ -35,8 +41,10 @@ arch-pac-test:
     rg-binary:
         check: file=/usr/bin/rg
         id: rg-binary
-        file: /usr/bin/rg
-        exists: true
+        plugin: file
+        plugin_input:
+            file: /usr/bin/rg
+            exists: true
     ripgrep-package:
         check: package=ripgrep
         id: ripgrep-package
