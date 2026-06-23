@@ -28,8 +28,10 @@ arch-pac-test:
     nvim-package:
         check: package=neovim
         id: nvim-package
-        package: neovim
-        installed: true
+        plugin: package
+        plugin_input:
+            package: neovim
+            installed: true
     rg-binary:
         check: file=/usr/bin/rg
         id: rg-binary
@@ -38,5 +40,7 @@ arch-pac-test:
     ripgrep-package:
         check: package=ripgrep
         id: ripgrep-package
-        package: ripgrep
-        installed: true
+        plugin: package
+        plugin_input:
+            package: ripgrep
+            installed: true
