@@ -65,6 +65,74 @@ check-arch-vscode-pod:
         plugin_input:
             command: charly status --json
             in_container: false
+# =================================================================
+# check-tmux-pod — R10 witness for the MAIN superproject's externalized `charly tmux`
+# COMMAND (overthink candy/plugin-tmux, command:tmux — the FIRST welded-command
+# externalization, the precedent for preempt/feature/vm). It lives HERE in box/arch (not
+# main) because it deploys a custom box (check-tmux-box, a sibling box/arch box = arch base
+# + the tmux candy baked) and main owns no boxes. Running it FROM box/arch is also what makes
+# it resolvable: the bed runner's selfSuperprojectOverridePair(box/arch) points the
+# `@github` overthink refs (check-tmux-box's candy/tmux) at the LOCAL main working tree — the
+# SAME pattern check-arch-vscode-pod uses for candy/vscode, and box/fedora's
+# check-fedora-coder-pod uses to test main's charly-mcp via the host charly.
+# The HOST charly under test is the superproject build (the baked plugin-tmux from pkg/arch):
+# the single host-side check drives the full `charly tmux` round-trip against the deployed pod —
+#   - `charly tmux run`     creates a detached session (printing a RUN marker, then exec bash)
+#   - `charly tmux list`    shows the session by name
+#   - `charly tmux capture` returns the session's pane output (the RUN marker)
+#   - `charly tmux send`    injects a command the live shell EXECUTES (arithmetic marker)
+#   - `charly tmux capture` returns the EXECUTED output (TMUX-SEND-42)
+#   - `charly tmux kill`    tears the session down
+# proving the externalized plugin's `charly cmd`/`charly shell` shell-backs reach the pod's tmux
+# (same container, exec user, /tmp/tmux-<uid> socket) identically to the former welded core path
+# (resolveCheckVenue + DeployExecutor venueRun). The interactive shell/attach leaves (a real TTY
+# via `charly shell -c`) cannot be driven non-interactively; they share the SAME shell-back
+# design and are proven by the Go e2e (TestExternalCommandExecPlan_Tmux) + the design.
+# =================================================================
+check-tmux-pod:
+    pod:
+        image: check-tmux-box
+        disposable: true
+        lifecycle: dev
+        description: >-
+            Sole proof of the MAIN superproject's externalized `charly tmux` COMMAND
+            (overthink candy/plugin-tmux, command:tmux), the FIRST welded-command
+            externalization. A disposable pod running check-tmux-box (arch base + the tmux
+            candy baked) whose host-side check drives the full `charly tmux` session round-trip
+            against the pod via the HOST charly (the baked plugin-tmux under test): `run`
+            creates a detached session, `list` shows it, `capture` returns its echoed output,
+            `send` injects a command the live shell EXECUTES, a second `capture` returns the
+            EXECUTED output, and `kill` tears it down — proving the plugin's `charly cmd`/`charly
+            shell` shell-backs reach the pod's tmux (same container, exec user, and tmux socket)
+            identically to the former welded core path (TMUX-ROUNDTRIP-OK).
+    tmux-roundtrip:
+        check: >-
+            the externalized charly tmux drives a full session round-trip against the pod
+            (run creates a detached session, list shows it, capture returns its echoed RUN
+            marker, send injects a command whose EXECUTED output a second capture returns, kill
+            removes it) — proving the charly cmd/charly shell shell-backs reach the pod's tmux
+        id: tmux-roundtrip
+        exit_status: 0
+        stdout:
+            - contains: TMUX-ROUNDTRIP-OK
+        context:
+            - runtime
+        plugin: command
+        plugin_input:
+            in_container: false
+            command: |
+                set -e
+                charly tmux kill check-tmux-pod -s rdd >/dev/null 2>&1 || true
+                charly tmux run check-tmux-pod -s rdd 'echo TMUX-RUN-LIVE; exec bash --norc'
+                charly tmux list check-tmux-pod | grep -qE '^rdd:'
+                charly tmux capture check-tmux-pod -s rdd -n 200 | grep -q TMUX-RUN-LIVE
+                # send (text + Enter, no -l) injects a command the live shell EXECUTES — the
+                # arithmetic marker $((6*7))→42 only appears in the pane if the keys were
+                # delivered AND the shell ran the line (not merely typed it).
+                charly tmux send check-tmux-pod -s rdd 'echo TMUX-SEND-$((6*7))' --enter
+                charly tmux capture check-tmux-pod -s rdd -n 200 | grep -q 'TMUX-SEND-42'
+                charly tmux kill check-tmux-pod -s rdd
+                echo TMUX-ROUNDTRIP-OK
 check-arch-pacstrap-vm:
     vm:
         from: arch-pacstrap
