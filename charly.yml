@@ -158,7 +158,7 @@ check-arch-vm:
         from: arch
         disposable: true
         lifecycle: dev
-        description: Sole runnable non-GPU bed for deterministic SPICE and the 8-method libvirt-RPC probe surface, and the only bed proving add_candy overlay install and nested local-target host deploys over VmDeployTarget and NestedExecutor. Boots the Arch cloud-image libvirt VM (SPICE socket + virtio-gpu + qemu-guest-agent), scps the host charly binary in, overlays ripgrep/uv/pre-commit, runs ~50 guest probes (command/package/service/port/process/user/group/interface/mount/dns/addr plus spice status/screenshot plus the 8 libvirt-RPC probes plus a kernel-param sysctl assertion), and drives two nested local-target beds (tailscale runtime wiring; direnv plus the install-ledger).
+        description: Sole runnable non-GPU bed for deterministic SPICE and the 8-method libvirt-RPC probe surface, and the only bed proving add_candy overlay install and nested local-target host deploys over the external vm deploy (kit.WalkPlans over SSH) and NestedExecutor. Boots the Arch cloud-image libvirt VM (SPICE socket + virtio-gpu + qemu-guest-agent), scps the host charly binary in, overlays ripgrep/uv/pre-commit, runs ~50 guest probes (command/package/service/port/process/user/group/interface/mount/dns/addr plus spice status/screenshot plus the 8 libvirt-RPC probes plus a kernel-param sysctl assertion), and drives two nested local-target beds (tailscale runtime wiring; direnv plus the install-ledger).
     charly-cachyos-tailscale-test:
         local:
             disposable: true
@@ -758,7 +758,7 @@ arch:
                 # block (git clone + makepkg + pacman -U) was DELETED
                 # in the 2026-05 R10 follow-up: it was redundant with
                 # `charly_install.strategy: auto` (which scps the host
-                # binary post-boot via VmDeployTarget) AND timed out
+                # binary post-boot via the vm deploy's PrepareVenue/EnsureCharlyInGuest) AND timed out
                 # under load — leaving non-empty errors[] in
                 # /var/lib/cloud/data/result.json that broke the
                 # `cloud-init no-errors` check probe.
@@ -780,7 +780,7 @@ arch:
                 # after cloud-init reaches steady-state. Sole install
                 # path; no defence-in-depth runcmd fallback (it could
                 # not consume the scp's failure signal anyway because
-                # cloud-init runs before VmDeployTarget.Emit fires).
+                # cloud-init runs before the vm deploy walk fires).
                 strategy: auto
     arch-libvirt:
         libvirt:
